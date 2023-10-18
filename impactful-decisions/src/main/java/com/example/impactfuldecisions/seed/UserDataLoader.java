@@ -26,7 +26,7 @@ public class UserDataLoader implements CommandLineRunner {
     private void loadUserData() {
         User user1 = new User();
         user1.setUsername("decisionmaker101");
-        user1.setEmailAddress("impactfuldecisions@gmail.com");
+        user1.setEmailAddress("impactfuldecisionsteam@gmail.com");
         user1.setPassword(passwordEncoder.encode("password12345"));
         userRepository.save(user1);
     }
