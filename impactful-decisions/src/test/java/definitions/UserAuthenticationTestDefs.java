@@ -1,9 +1,11 @@
 package definitions;
 
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -57,7 +59,7 @@ public class UserAuthenticationTestDefs extends TestSetUpDefs{
         RestAssured.baseURI = BASE_URL;
         RequestSpecification request = RestAssured.given();
         requestBody = new JSONObject();
-        requestBody.put("userName","decisionmaker101");
+        requestBody.put("username","decisionmaker101");
         requestBody.put("emailAddress","impactfuldecisionsteam@gmail.com");
         requestBody.put("password","password12345");
         request.header("Content-Type","application/json");
@@ -70,4 +72,34 @@ public class UserAuthenticationTestDefs extends TestSetUpDefs{
         Assert.assertEquals(201,response.getStatusCode());
     }
 
+    // ------ Public Endpoint Tests for logging in a user ------
+    @Given("I am on the login page")
+    public void iAmOnTheLoginPage() {
+        RequestSpecification request = RestAssured.given();
+        response = request.get(BASE_URL + port + loginEndpoint);
+        JsonPath jsonPath = response.jsonPath();
+        String actualPath = jsonPath.getString("path");
+        Assert.assertEquals(loginEndpoint,actualPath);
+    }
+
+    @When("I enter my credentials and click the login button")
+    public void iEnterMyCredentialsAndClickTheLoginButton() throws JSONException {
+        RequestSpecification request = RestAssured.given();
+        response = request.contentType(ContentType.JSON).body(requestBody.toString()).post(BASE_URL + port + loginEndpoint);
+    }
+
+    @Then("I am logged into my account")
+    public void iAmLoggedIntoMyAccount() {
+        Assert.assertEquals(200, response.getStatusCode());
+    }
+
+    @And("I receive a JWT token")
+    public void iReceiveAJWTToken() {
+        Assert.assertNotNull(response.jsonPath().getString("jwt"));
+    }
+
+    @And("I receive the user object")
+    public void iReceiveTheUserObject() {
+        Assert.assertEquals("decisionmaker101",response.jsonPath().getString("user.username"));
+    }
 }

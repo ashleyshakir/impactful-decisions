@@ -15,3 +15,4 @@ Feature: Authentication/Authorization of User
     When I enter my credentials and click the login button
     Then I am logged into my account
     And I receive a JWT token
+    And I receive the user object
