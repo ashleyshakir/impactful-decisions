@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -34,6 +35,34 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     private DecisionRepository decisionRepository;
     @Autowired
     private DecisionService decisionService;
+
+    // For testing secure endpoints:
+    public String getJWTToken() throws JSONException {
+        logger.info("TestJWTToken: Generated");
+        // Set the base URI and create a request
+        RestAssured.baseURI = BASE_URL;
+        RequestSpecification request = RestAssured.given();
+
+        // Set the content-type header to indicate JSON data
+        request.header("Content-Type", "application/json");
+
+        // Create a JSON request body with user email and password
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("emailAddress", "impactfuldecisionsteam@gmail.com");
+        requestBody.put("password", "password12345");
+
+        // Send a POST request to the authentication endpoint
+        Response response = request.body(requestBody.toString()).post(BASE_URL + port + loginEndpoint);
+
+        // Extract and return the JWT token from the authentication response
+        return response.jsonPath().getString("jwt");
+    }
+    private HttpHeaders createAuthHeaders() throws JSONException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + getJWTToken());
+        headers.add("Content-Type", "application/json");
+        return headers;
+    }
 
 
     @Given("I am logged into my account securely")
