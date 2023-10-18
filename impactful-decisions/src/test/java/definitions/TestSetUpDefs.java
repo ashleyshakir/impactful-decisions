@@ -22,5 +22,6 @@ public class TestSetUpDefs {
 
     // Public Endpoints
     public static final String helloEndpoint = "/auth/users/hello/";
+    public static final String registerEndpoint = "/auth/users/register/";
 
 }
