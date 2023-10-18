@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.List;
 
 public class DecisionControllerTestDefs extends TestSetUpDefs{
 
@@ -27,6 +28,7 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     // Service testing variables
     Exception caughtException = null;
     Decision decision = new Decision();
+    List<Decision> decisionList;
 
     @Autowired
     private DecisionRepository decisionRepository;
@@ -89,6 +91,17 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     @Then("The decision is retrieved")
     public void theDecisionIsRetrieved() {
         Assert.assertNotNull(decision);
+    }
+
+    @When("I want to view my list of decisions")
+    public void iWantToViewMyListOfDecisions() {
+        logger.info("Calling I want to view my list of decisions");
+        decisionList = decisionService.getUserDecisions();
+    }
+
+    @Then("The list of decisions is retrieved")
+    public void theListOfDecisionsIsRetrieved() {
+        Assert.assertNotNull(decisionList);
     }
 
 

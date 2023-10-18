@@ -8,8 +8,8 @@ Feature: Rest API functionalities
     Then Then a DecisionExistsException is thrown
     When I want to view a decision
     Then The decision is retrieved
-#    When I want to view my list of decisions
-#    Then The list of decisions is retrieved
+    When I want to view my list of decisions
+    Then The list of decisions is retrieved
 #    When I update a decision
 #    Then The decision is updated
 #    When I delete a decision

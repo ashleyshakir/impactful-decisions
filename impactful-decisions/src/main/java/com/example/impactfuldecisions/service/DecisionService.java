@@ -7,6 +7,7 @@ import com.example.impactfuldecisions.repository.DecisionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,6 +37,14 @@ public class DecisionService {
         } else {
             throw new InformationNotFoundException("A decision with the id of " + decisionId + " does not exist.");
         }
+    }
+    // Testing the business logic for viewing a list of decisions
+    public List<Decision> getUserDecisions() {
+        List<Decision> decisionList = decisionRepository.findByUserId(1L);
+        if (decisionList.isEmpty()) {
+            throw new InformationNotFoundException("You have no albums!");
+        }
+        return decisionList;
     }
 
 
