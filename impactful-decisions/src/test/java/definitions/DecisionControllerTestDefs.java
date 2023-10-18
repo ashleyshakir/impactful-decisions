@@ -103,6 +103,20 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     public void theListOfDecisionsIsRetrieved() {
         Assert.assertNotNull(decisionList);
     }
+    @When("I update a decision")
+    public void iUpdateADecision() {
+        logger.info("Calling I update a decision");
+        Decision updatedDecision = new Decision();
+        updatedDecision.setTitle("This is my updated decision title");
+        updatedDecision.setResolved(true);
+        decisionService.updateDecision(1L, updatedDecision);
+    }
+
+    @Then("The decision is updated")
+    public void theDecisionIsUpdated() {
+        Assert.assertEquals("This is my updated decision title",decisionRepository.findById(1L).get().getTitle());
+        Assert.assertTrue(decisionRepository.findById(1L).get().isResolved());
+    }
 
 
 }
