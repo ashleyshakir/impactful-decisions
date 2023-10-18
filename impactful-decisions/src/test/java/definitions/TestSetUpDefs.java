@@ -25,4 +25,7 @@ public class TestSetUpDefs {
     public static final String registerEndpoint = "/auth/users/register/";
     public static final String loginEndpoint= "/auth/users/login/";
 
+    // Decision Endpoints
+    public static final String decisionsEndpoint = "/api/decisions/";
+
 }

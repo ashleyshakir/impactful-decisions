@@ -1,7 +1,12 @@
 package com.example.impactfuldecisions.controller;
 
+import com.example.impactfuldecisions.models.Decision;
 import com.example.impactfuldecisions.service.DecisionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,5 +22,18 @@ public class DecisionController {
     @Autowired
     public DecisionController(DecisionService decisionService) {
         this.decisionService = decisionService;
+    }
+
+    @PostMapping(path = "/decisions/")
+    public ResponseEntity<?> createDecision(@RequestBody Decision decisionObject) {
+        Decision decision = decisionService.createDecision(decisionObject);
+        if (decision != null) {
+            message.put("message", "success, decision created");
+            message.put("data", decision);
+            return new ResponseEntity<>(message, HttpStatus.CREATED);
+        } else {
+            message.put("message", "unable to create decision.");
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
     }
 }

@@ -3,8 +3,11 @@ package com.example.impactfuldecisions.service;
 import com.example.impactfuldecisions.exceptions.DecisionExistsException;
 import com.example.impactfuldecisions.exceptions.InformationNotFoundException;
 import com.example.impactfuldecisions.models.Decision;
+import com.example.impactfuldecisions.models.User;
 import com.example.impactfuldecisions.repository.DecisionRepository;
+import com.example.impactfuldecisions.security.MyUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,12 +22,22 @@ public class DecisionService {
     public void setDecisionRepository(DecisionRepository decisionRepository) {
         this.decisionRepository = decisionRepository;
     }
+    /**
+     * Get the currently logged-in user
+     *
+     * @return The current user
+     */
+    public static User getCurrentLoggedInUser() {
+        MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userDetails.getUser();
+    }
 
     // Testing the business logic for creating a decision
     public Decision createDecision(Decision decisionObject) {
         if (decisionRepository.findByTitle(decisionObject.getTitle()) != null) {
             throw new DecisionExistsException("You have already created a decision with the title: " + decisionObject.getTitle());
         } else {
+            decisionObject.setUser(DecisionService.getCurrentLoggedInUser());
             return decisionRepository.save(decisionObject);
         }
     }

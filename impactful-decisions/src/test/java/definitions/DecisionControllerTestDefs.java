@@ -15,7 +15,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -30,6 +31,7 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     Exception caughtException = null;
     Decision decision = new Decision();
     List<Decision> decisionList;
+    private static ResponseEntity<String> responseEntity;
 
     @Autowired
     private DecisionRepository decisionRepository;
@@ -72,19 +74,23 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     }
 
     @When("I create a new decision and add a new title")
-    public void iCreateANewDecisionAndAddANewTitle() {
-        logger.info("Calling I create a new decision and add a new title");
-        Decision decision = new Decision();
-        decision.setTitle("Should I buy a new car?");
-        decision.setDescription("Deciding between a Toyota 4Runner and a Ford Bronco");
-        decision.setCreationDate(LocalDate.now(Clock.systemDefaultZone()));
-        decisionService.createDecision(decision);
+    public void iCreateANewDecisionAndAddANewTitle() throws JSONException {
+        logger.info("Calling I create a new decision");
+        // Creating authorization and content type
+        HttpHeaders headers = createAuthHeaders();
+        // Creating a new decision object to pass through
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("title", "New Test Decision");
+        requestBody.put("description", "New Decision Description");
+        // Build our post request
+        HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), headers);
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + decisionsEndpoint, HttpMethod.POST, entity, String.class);
     }
 
     @Then("My new decision is created")
     public void myNewDecisionIsCreated() {
-        logger.info("Calling then my new decision is created");
-        Assert.assertNotNull(decisionRepository.findByTitle("Should I buy a new car?"));
+        logger.info("Calling the new decision is created");
+        Assert.assertEquals(HttpStatus.CREATED,responseEntity.getStatusCode());
     }
 
     @When("I create a new decision with an existing title")
