@@ -23,7 +23,10 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
 
     private static JSONObject requestBody;
     private static Response response;
+
+    // Service testing variables
     Exception caughtException = null;
+    Decision decision = new Decision();
 
     @Autowired
     private DecisionRepository decisionRepository;
@@ -75,6 +78,17 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
         Assert.assertNotNull("Expected an exception to be thrown", caughtException);
         Assert.assertTrue("Expected DecisionExistsException but found " + caughtException,
                 caughtException instanceof DecisionExistsException);
+    }
+
+    @When("I want to view a decision")
+    public void iWantToViewADecision() {
+        logger.info("Calling I want to view a decision");
+        decision = decisionService.getDecision(1L);
+    }
+
+    @Then("The decision is retrieved")
+    public void theDecisionIsRetrieved() {
+        Assert.assertNotNull(decision);
     }
 
 
