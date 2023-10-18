@@ -1,8 +1,8 @@
-package com.example.impactfuldecisions.service;
+package com.example.impactfuldecisions.security;
 
 import com.example.impactfuldecisions.models.User;
-import com.example.impactfuldecisions.security.MyUserDetails;
 
+import com.example.impactfuldecisions.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
