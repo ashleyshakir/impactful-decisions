@@ -59,6 +59,16 @@ public class DecisionService {
         return decisionRepository.save(existingDecision);
     }
 
+    // Testing the business logic for deleting a decision
+    public Optional<Decision> deleteDecision(Long decisionId) {
+        Optional<Decision> decision = Optional.ofNullable(decisionRepository.findByIdAndUserId(decisionId, 1L));
+        if (decision.isEmpty()) {
+            throw new InformationNotFoundException("You cannot delete a decision that does not exist!");
+        }
+        decisionRepository.deleteById(decisionId);
+        return decision;
+    }
+
 
 
 }

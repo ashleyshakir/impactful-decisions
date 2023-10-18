@@ -117,6 +117,16 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
         Assert.assertEquals("This is my updated decision title",decisionRepository.findById(1L).get().getTitle());
         Assert.assertTrue(decisionRepository.findById(1L).get().isResolved());
     }
+    @When("I delete a decision")
+    public void iDeleteADecision() {
+        logger.info("Calling when I delete a decision");
+        decisionService.deleteDecision(1L);
+    }
+
+    @Then("The decision is deleted")
+    public void theDecisionIsDeleted() {
+        Assert.assertTrue(decisionRepository.findById(1L).isEmpty());
+    }
 
 
 }

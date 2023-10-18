@@ -12,5 +12,5 @@ Feature: Rest API functionalities
     Then The list of decisions is retrieved
     When I update a decision
     Then The decision is updated
-#    When I delete a decision
-#    Then The decision is deleted
+    When I delete a decision
+    Then The decision is deleted
