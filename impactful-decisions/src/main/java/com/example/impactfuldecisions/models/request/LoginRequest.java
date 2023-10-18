@@ -1,4 +1,4 @@
-package com.example.impactfuldecisions.models.Request;
+package com.example.impactfuldecisions.models.request;
 
 /**
  * A class representing a login request, containing the user's email address and password.
