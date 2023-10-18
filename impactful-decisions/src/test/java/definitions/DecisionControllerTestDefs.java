@@ -1,5 +1,6 @@
 package definitions;
 
+import com.example.impactfuldecisions.exceptions.DecisionExistsException;
 import com.example.impactfuldecisions.models.Decision;
 import com.example.impactfuldecisions.repository.DecisionRepository;
 import com.example.impactfuldecisions.service.DecisionService;
@@ -22,6 +23,7 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
 
     private static JSONObject requestBody;
     private static Response response;
+    Exception caughtException = null;
 
     @Autowired
     private DecisionRepository decisionRepository;
@@ -53,6 +55,26 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     public void myNewDecisionIsCreated() {
         logger.info("Calling then my new decision is created");
         Assert.assertNotNull(decisionRepository.findByTitle("Should I buy a new car?"));
+    }
+
+    @When("I create a new decision with an existing title")
+    public void iCreateANewDecisionWithAnExistingTitle() {
+        logger.info("Calling I create a new decision with an existing title");
+        try{
+            Decision decision = new Decision();
+            decision.setTitle("Should I buy a new car?");
+            decisionService.createDecision(decision);
+        } catch (Exception e){
+            caughtException = e;
+        }
+    }
+
+    @Then("Then a DecisionExistsException is thrown")
+    public void thenADecisionExistsExceptionIsThrown() {
+        logger.info("Calling Then a DecisionExistsException is thrown");
+        Assert.assertNotNull("Expected an exception to be thrown", caughtException);
+        Assert.assertTrue("Expected DecisionExistsException but found " + caughtException,
+                caughtException instanceof DecisionExistsException);
     }
 
 
