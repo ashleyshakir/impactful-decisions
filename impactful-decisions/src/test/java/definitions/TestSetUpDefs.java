@@ -20,4 +20,7 @@ public class TestSetUpDefs {
     // Base URL for testing
     public static final String BASE_URL = "http://localhost:";
 
+    // Public Endpoints
+    public static final String helloEndpoint = "/auth/users/hello/";
+
 }
