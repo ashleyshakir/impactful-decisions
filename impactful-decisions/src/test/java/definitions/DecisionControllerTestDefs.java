@@ -64,15 +64,11 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
         return headers;
     }
 
-
     @Given("I am logged into my account securely")
     public void iAmLoggedIntoMyAccountSecurely() throws JSONException {
+        logger.info("Calling I am a logged in user");
         RequestSpecification request = RestAssured.given();
-        requestBody = new JSONObject();
-        requestBody.put("emailAddress","impactfuldecisionsteam@gmail.com");
-        requestBody.put("password","password12345");
-        response = request.contentType(ContentType.JSON).body(requestBody.toString()).post(BASE_URL + port + loginEndpoint);
-        Assert.assertEquals(200, response.getStatusCode());
+        request.header("Authorization", "Bearer " + getJWTToken());
     }
 
     @When("I create a new decision and add a new title")
