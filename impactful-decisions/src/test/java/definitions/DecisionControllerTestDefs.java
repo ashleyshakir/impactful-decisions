@@ -39,5 +39,21 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
         Assert.assertEquals(200, response.getStatusCode());
     }
 
+    @When("I create a new decision and add a new title")
+    public void iCreateANewDecisionAndAddANewTitle() {
+        logger.info("Calling I create a new decision and add a new title");
+        Decision decision = new Decision();
+        decision.setTitle("Should I buy a new car?");
+        decision.setDescription("Deciding between a Toyota 4Runner and a Ford Bronco");
+        decision.setCreationDate(LocalDate.now(Clock.systemDefaultZone()));
+        decisionService.createDecision(decision);
+    }
+
+    @Then("My new decision is created")
+    public void myNewDecisionIsCreated() {
+        logger.info("Calling then my new decision is created");
+        Assert.assertNotNull(decisionRepository.findByTitle("Should I buy a new car?"));
+    }
+
 
 }
