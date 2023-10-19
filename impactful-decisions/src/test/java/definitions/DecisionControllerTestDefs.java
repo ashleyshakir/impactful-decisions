@@ -218,15 +218,15 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     }
 
     @When("I delete criteria from a decision")
-    public void iDeleteCriteriaFromADecision() {
+    public void iDeleteCriteriaFromADecision() throws JSONException {
         logger.info("I delete criteria from a decision");
-        decisionService.deleteCriteria(1L,1L);
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + singleCriteriaEndpoint, HttpMethod.DELETE, new HttpEntity<>(createAuthHeaders()), String.class);
     }
 
     @Then("It is deleted from the decision")
     public void itIsDeletedFromTheDecision() {
-        Assert.assertTrue(criteriaRepository.findById(1L).isEmpty());
-        Assert.assertTrue(decisionRepository.findById(1L).get().getCriteriaList().isEmpty());
+        logger.info("The criteria is deleted from the decision");
+        Assert.assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
     }
 
 

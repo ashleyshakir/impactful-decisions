@@ -21,5 +21,5 @@ Feature: Rest API functionalities
     Then The criteria is added to the decision
     When I update criteria name or weight
     Then The criteria is updated
-#    When I delete criteria from a decision
-#    Then It is deleted from the decision
+    When I delete criteria from a decision
+    Then It is deleted from the decision

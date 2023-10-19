@@ -114,6 +114,19 @@ public class DecisionController {
         }
     }
 
+    @DeleteMapping(path = "decisions/{decisionId}/criteria/{criteriaId}/")
+    public ResponseEntity<?> deleteCriteria(@PathVariable(value = "decisionId") Long decisionId, @PathVariable(value = "criteriaId")Long criteriaId){
+        Optional<Criteria> criteria = decisionService.deleteCriteria(decisionId, criteriaId);
+        if(criteria.isEmpty()){
+            message.put("message", "cannot find criteria");
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "success, criteria deleted");
+            message.put("data",criteria.get());
+            return new ResponseEntity<>(message,HttpStatus.OK);
+        }
+    }
+
 
 
 
