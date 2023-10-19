@@ -154,6 +154,19 @@ public class DecisionController {
         }
     }
 
+    @DeleteMapping(path = "decisions/{decisionId}/options/{optionId}/")
+    public ResponseEntity<?> deleteOption(@PathVariable(value = "decisionId") Long decisionId, @PathVariable(value = "optionId") Long optionId) {
+        Optional<Option> option = decisionService.deleteOption(decisionId, optionId);
+        if (option.isEmpty()) {
+            message.put("message", "cannot find option");
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "success, option deleted");
+            message.put("data", option.get());
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
+
 
 
 

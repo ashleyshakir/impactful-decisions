@@ -30,5 +30,5 @@ Feature: Rest API functionalities
     Then The option is added to the decision
     When I update an option name
     Then The option name is updated
-#    When I delete an option from a decision
-#    Then The option is deleted from the decision
+    When I delete an option from a decision
+    Then The option is deleted from the decision

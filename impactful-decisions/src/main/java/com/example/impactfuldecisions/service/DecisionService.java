@@ -170,7 +170,7 @@ public class DecisionService {
 
     // Testing the business logic for deleting decision option
     public Optional<Option> deleteOption(Long decisionId, Long optionId) {
-        Decision decision = decisionRepository.findByIdAndUserId(decisionId, 1L);
+        Decision decision = decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId());
         if (decision == null) {
             throw new InformationNotFoundException("Decision not found");
         } else {

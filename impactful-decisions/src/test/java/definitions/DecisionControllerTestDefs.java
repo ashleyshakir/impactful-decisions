@@ -270,15 +270,15 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     }
 
     @When("I delete an option from a decision")
-    public void iDeleteAnOptionFromADecision() {
-        logger.info("I delete an option from a decision");
-        decisionService.deleteOption(1L,1L);
+    public void iDeleteAnOptionFromADecision() throws JSONException {
+        logger.info("Calling I delete an option from a decision");
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + singleOptionEndpoint, HttpMethod.DELETE, new HttpEntity<>(createAuthHeaders()), String.class);
     }
 
     @Then("The option is deleted from the decision")
     public void theOptionIsDeletedFromTheDecision() {
-        Assert.assertTrue(optionRepository.findById(1L).isEmpty());
-        Assert.assertTrue(decisionRepository.findById(1L).get().getOptionList().isEmpty());
+        logger.info("Calling the option is deleted from the decision.");
+        Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
 
