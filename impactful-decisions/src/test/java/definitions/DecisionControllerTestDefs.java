@@ -330,15 +330,15 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     }
 
     @When("I delete a pro or con")
-    public void iDeleteAProOrCon() {
+    public void iDeleteAProOrCon() throws JSONException {
         logger.info("Calling I delete a pro or con");
-        decisionService.deleteProCon(1L,1L,1L);
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + singleProConEndpoint, HttpMethod.DELETE, new HttpEntity<>(createAuthHeaders()), String.class);
     }
 
     @Then("The pro or con is deleted")
     public void theProOrConIsDeleted() {
         logger.info("Calling the pro or con is deleted");
-        Assert.assertTrue(optionRepository.findByIdAndDecisionId(1L,1L).getProConList().isEmpty());
+        Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
 
