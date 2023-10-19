@@ -1,7 +1,9 @@
 package com.example.impactfuldecisions.seed;
 
+import com.example.impactfuldecisions.models.Criteria;
 import com.example.impactfuldecisions.models.Decision;
 import com.example.impactfuldecisions.models.User;
+import com.example.impactfuldecisions.repository.CriteriaRepository;
 import com.example.impactfuldecisions.repository.DecisionRepository;
 import com.example.impactfuldecisions.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +21,17 @@ public class UserDataLoader implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final DecisionRepository decisionRepository;
+    private final CriteriaRepository criteriaRepository;
 
     @Autowired
     public UserDataLoader(UserRepository userRepository,
                           DecisionRepository decisionRepository,
+                          CriteriaRepository criteriaRepository,
                           @Lazy PasswordEncoder passwordEncoder)
     {
         this.userRepository = userRepository;
         this.decisionRepository = decisionRepository;
+        this.criteriaRepository = criteriaRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -47,5 +52,23 @@ public class UserDataLoader implements CommandLineRunner {
         decision1.setCreationDate(LocalDate.now(Clock.systemDefaultZone()));
         decision1.setUser(user1);
         decisionRepository.save(decision1);
+
+        Criteria criteria1 = new Criteria();
+        criteria1.setName("Price");
+        criteria1.setWeight(0.5);
+        criteria1.setDecision(decision1);
+        criteriaRepository.save(criteria1);
+
+        Criteria criteria2 = new Criteria();
+        criteria2.setName("Family Time");
+        criteria2.setWeight(0.3);
+        criteria2.setDecision(decision1);
+        criteriaRepository.save(criteria2);
+
+        Criteria criteria3 = new Criteria();
+        criteria3.setName("Sleep");
+        criteria3.setWeight(0.2);
+        criteria3.setDecision(decision1);
+        criteriaRepository.save(criteria3);
     }
 }
