@@ -76,7 +76,7 @@ public class DecisionService {
 
     // Testing the business logic for deleting a decision
     public Optional<Decision> deleteDecision(Long decisionId) {
-        Optional<Decision> decision = Optional.ofNullable(decisionRepository.findByIdAndUserId(decisionId, 1L));
+        Optional<Decision> decision = Optional.ofNullable(decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId()));
         if (decision.isEmpty()) {
             throw new InformationNotFoundException("You cannot delete a decision that does not exist!");
         }

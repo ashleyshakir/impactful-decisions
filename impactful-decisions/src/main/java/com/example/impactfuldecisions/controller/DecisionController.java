@@ -74,6 +74,18 @@ public class DecisionController {
             return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
         }
     }
+    @DeleteMapping(path = "/decisions/{decisionId}/")
+    public ResponseEntity<?> deleteDecision(@PathVariable(value = "decisionId")Long decisionId){
+        Optional<Decision> decision = decisionService.deleteDecision(decisionId);
+        if(decision.isEmpty()){
+            message.put("message","Decision not found");
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "Decision successfully deleted");
+            message.put("data",decision.get());
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
 
 
 
