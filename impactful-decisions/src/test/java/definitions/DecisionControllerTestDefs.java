@@ -4,9 +4,11 @@ import com.example.impactfuldecisions.exceptions.DecisionExistsException;
 import com.example.impactfuldecisions.models.Criteria;
 import com.example.impactfuldecisions.models.Decision;
 import com.example.impactfuldecisions.models.Option;
+import com.example.impactfuldecisions.models.ProCon;
 import com.example.impactfuldecisions.repository.CriteriaRepository;
 import com.example.impactfuldecisions.repository.DecisionRepository;
 import com.example.impactfuldecisions.repository.OptionRepository;
+import com.example.impactfuldecisions.repository.ProConRepository;
 import com.example.impactfuldecisions.service.DecisionService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -47,6 +49,8 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     private CriteriaRepository criteriaRepository;
     @Autowired
     private OptionRepository optionRepository;
+    @Autowired
+    private ProConRepository proConRepository;
 
     // For testing secure endpoints:
     public String getJWTToken() throws JSONException {
@@ -279,6 +283,31 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     public void theOptionIsDeletedFromTheDecision() {
         logger.info("Calling the option is deleted from the decision.");
         Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    @Given("I am editing an option")
+    public void iAmEditingAnOption() {
+        logger.info("Calling I am editing an option");
+        Assert.assertNotNull(optionRepository.findByIdAndDecisionId(1L,1L));
+    }
+
+    @When("I click to add a new pro or con")
+    public void iClickToAddANewProOrCon() {
+        logger.info("Calling I am adding a pro or con");
+        ProCon proCon = new ProCon();
+        proCon.setType("Pro");
+        proCon.setDescription("Making memories with family");
+        proCon.setRating(4.5);
+        Criteria criteria = criteriaRepository.findById(1L).get();
+        decisionService.addProCon(1L, 1L, criteria, proCon);
+    }
+
+    @Then("The new pro or con is added")
+    public void theNewProOrConIsAdded() {
+        logger.info("Calling the new pro or con is added");
+        Assert.assertNotNull(proConRepository.findById(1L));
+        Assert.assertNotNull(proConRepository.findByType("Pro"));
+        Assert.assertFalse(optionRepository.findByIdAndDecisionId(1L, 1L).getProConList().isEmpty());
     }
 
 

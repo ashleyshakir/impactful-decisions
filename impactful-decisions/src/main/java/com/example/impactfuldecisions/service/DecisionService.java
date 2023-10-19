@@ -2,13 +2,11 @@ package com.example.impactfuldecisions.service;
 
 import com.example.impactfuldecisions.exceptions.DecisionExistsException;
 import com.example.impactfuldecisions.exceptions.InformationNotFoundException;
-import com.example.impactfuldecisions.models.Criteria;
-import com.example.impactfuldecisions.models.Decision;
-import com.example.impactfuldecisions.models.Option;
-import com.example.impactfuldecisions.models.User;
+import com.example.impactfuldecisions.models.*;
 import com.example.impactfuldecisions.repository.CriteriaRepository;
 import com.example.impactfuldecisions.repository.DecisionRepository;
 import com.example.impactfuldecisions.repository.OptionRepository;
+import com.example.impactfuldecisions.repository.ProConRepository;
 import com.example.impactfuldecisions.security.MyUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,14 +21,17 @@ public class DecisionService {
     private DecisionRepository decisionRepository;
     private CriteriaRepository criteriaRepository;
     private OptionRepository optionRepository;
+    private ProConRepository proConRepository;
 
     @Autowired
     public void setDecisionRepository(DecisionRepository decisionRepository,
                                       CriteriaRepository criteriaRepository,
-                                      OptionRepository optionRepository) {
+                                      OptionRepository optionRepository,
+                                      ProConRepository proConRepository) {
         this.decisionRepository = decisionRepository;
         this.criteriaRepository = criteriaRepository;
         this.optionRepository = optionRepository;
+        this.proConRepository = proConRepository;
     }
     /**
      * Get the currently logged-in user
@@ -265,6 +266,16 @@ public class DecisionService {
         }
     }
 
+    // Testing the business logic for adding option pros and cons
+    public ProCon addProCon(Long decisionId, Long optionId, Criteria criteria, ProCon proConObject) {
+        Option option = optionRepository.findByIdAndDecisionId(optionId, decisionId);
+        if (option == null) {
+            throw new InformationNotFoundException("Option not found");
+        }
+        proConObject.setOption(option);
+        proConObject.setCriteria(criteria);
+        return proConRepository.save(proConObject);
+    }
 
 
 }
