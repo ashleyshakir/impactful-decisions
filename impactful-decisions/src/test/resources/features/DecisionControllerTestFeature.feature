@@ -23,3 +23,12 @@ Feature: Rest API functionalities
     Then The criteria is updated
     When I delete criteria from a decision
     Then It is deleted from the decision
+
+  Scenario: User able to add, update, and delete decision options
+    Given I am editing a decision
+    When I click to add an option
+    Then The option is added to the decision
+#    When I update an option name
+#    Then The option name is updated
+#    When I delete an option from a decision
+#    Then The option is deleted from the decision
