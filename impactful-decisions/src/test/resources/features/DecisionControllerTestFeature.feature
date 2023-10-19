@@ -41,3 +41,10 @@ Feature: Rest API functionalities
     Then The pro or con is updated
     When I delete a pro or con
     Then The pro or con is deleted
+
+  Scenario: Option recommendation provides accurate results
+    Given I have a decision to analyze
+    When I want to see the score of an option
+    Then That options score is shown
+#    When I click to analyze the decision
+#    Then I am given a recommended option
