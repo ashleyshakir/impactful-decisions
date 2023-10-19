@@ -309,6 +309,22 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
         Assert.assertNotNull(proConRepository.findByType("Pro"));
         Assert.assertFalse(optionRepository.findByIdAndDecisionId(1L, 1L).getProConList().isEmpty());
     }
+    @When("I update a pro or con")
+    public void iUpdateAProOrCon() {
+        logger.info("Calling I update a pro or con");
+        ProCon updatedProCon = new ProCon();
+        updatedProCon.setType("PRO");
+        updatedProCon.setRating(5.0);
+        updatedProCon.setDescription("updated description");
+        decisionService.updateProCon(1L,1L,1L,updatedProCon);
+    }
+
+    @Then("The pro or con is updated")
+    public void theProOrConIsUpdated() {
+        logger.info("Calling the pro or con is updated");
+        Assert.assertEquals(5.0,proConRepository.findById(1L).get().getRating(),0.0001);
+        Assert.assertEquals("updated description",proConRepository.findById(1L).get().getDescription());
+    }
 
 
 }

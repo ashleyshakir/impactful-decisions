@@ -277,5 +277,25 @@ public class DecisionService {
         return proConRepository.save(proConObject);
     }
 
+    // Testing the business logic for updating decision Option
+    public ProCon updateProCon(Long decisionId, Long optionId, Long proConId, ProCon proConObject) {
+        Option option = optionRepository.findByIdAndDecisionId(optionId, decisionId);
+        if (option == null) {
+            throw new InformationNotFoundException("Option not found");
+        } else {
+            Optional<ProCon> proConOptional = proConRepository.findByOptionId(optionId)
+                    .stream().filter(proCon -> proCon.getId().equals(proConId)).findFirst();
+            if (proConOptional.isEmpty()) {
+                throw new InformationNotFoundException("A Pro or Con for that option does not exist");
+            } else {
+                ProCon existingProCon = proConOptional.get();
+                existingProCon.setType(proConObject.getType());
+                existingProCon.setRating(proConObject.getRating());
+                existingProCon.setDescription(proConObject.getDescription());
+                return proConRepository.save(existingProCon);
+            }
+        }
+    }
+
 
 }
