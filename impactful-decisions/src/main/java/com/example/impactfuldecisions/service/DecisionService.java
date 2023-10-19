@@ -2,8 +2,10 @@ package com.example.impactfuldecisions.service;
 
 import com.example.impactfuldecisions.exceptions.DecisionExistsException;
 import com.example.impactfuldecisions.exceptions.InformationNotFoundException;
+import com.example.impactfuldecisions.models.Criteria;
 import com.example.impactfuldecisions.models.Decision;
 import com.example.impactfuldecisions.models.User;
+import com.example.impactfuldecisions.repository.CriteriaRepository;
 import com.example.impactfuldecisions.repository.DecisionRepository;
 import com.example.impactfuldecisions.security.MyUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,13 @@ import java.util.Optional;
 public class DecisionService {
 
     private DecisionRepository decisionRepository;
+    private CriteriaRepository criteriaRepository;
 
     @Autowired
-    public void setDecisionRepository(DecisionRepository decisionRepository) {
+    public void setDecisionRepository(DecisionRepository decisionRepository,
+                                      CriteriaRepository criteriaRepository) {
         this.decisionRepository = decisionRepository;
+        this.criteriaRepository = criteriaRepository;
     }
     /**
      * Get the currently logged-in user
@@ -82,6 +87,16 @@ public class DecisionService {
         }
         decisionRepository.deleteById(decisionId);
         return decision;
+    }
+
+    // Testing the business logic for adding decision criteria
+    public Criteria addCriteria(Long decisionId, Criteria criteriaObject) {
+        Decision decision = decisionRepository.findByIdAndUserId(decisionId, 1L);
+        if (decision == null) {
+            throw new InformationNotFoundException("Decision not found");
+        }
+        criteriaObject.setDecision(decision);
+        return criteriaRepository.save(criteriaObject);
     }
 
 
