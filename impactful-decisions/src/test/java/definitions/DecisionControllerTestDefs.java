@@ -1,7 +1,9 @@
 package definitions;
 
 import com.example.impactfuldecisions.exceptions.DecisionExistsException;
+import com.example.impactfuldecisions.models.Criteria;
 import com.example.impactfuldecisions.models.Decision;
+import com.example.impactfuldecisions.repository.CriteriaRepository;
 import com.example.impactfuldecisions.repository.DecisionRepository;
 import com.example.impactfuldecisions.service.DecisionService;
 import io.cucumber.java.en.Given;
@@ -39,6 +41,8 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     private DecisionRepository decisionRepository;
     @Autowired
     private DecisionService decisionService;
+    @Autowired
+    private CriteriaRepository criteriaRepository;
 
     // For testing secure endpoints:
     public String getJWTToken() throws JSONException {
@@ -173,6 +177,28 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     @Then("The decision is deleted")
     public void theDecisionIsDeleted() {
         Assert.assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
+    }
+
+    @Given("a decision is available")
+    public void aDecisionIsAvailable() {
+        logger.info("Calling a decision is available");
+        Assert.assertNotNull(decisionRepository.findById(1L));
+    }
+
+    @When("I click to add criteria")
+    public void iClickToAddCriteria() {
+        logger.info("Calling I click to add criteria");
+        Criteria criteria = new Criteria();
+        criteria.setName("Costs");
+        criteria.setWeight(5D);
+        decisionService.addCriteria(1L,criteria);
+    }
+
+    @Then("The criteria is added to the decision")
+    public void theCriteriaIsAddedToTheDecision() {
+        logger.info("Calling the criteria is added to the decision");
+        Assert.assertNotNull(criteriaRepository.findByName("Costs"));
+        Assert.assertNotNull(decisionRepository.findById(1L).get().getCriteriaList());
     }
 
 
