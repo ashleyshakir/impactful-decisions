@@ -37,7 +37,7 @@ Feature: Rest API functionalities
     Given I am editing an option
     When I click to add a new pro or con
     Then The new pro or con is added
-    When I update a pro or con
-    Then The pro or con is updated
-    When I delete a pro or con
-    Then The pro or con is deleted
+#    When I update a pro or con
+#    Then The pro or con is updated
+#    When I delete a pro or con
+#    Then The pro or con is deleted

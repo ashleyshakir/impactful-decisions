@@ -286,29 +286,32 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     }
 
     @Given("I am editing an option")
-    public void iAmEditingAnOption() {
+    public void iAmEditingAnOption() throws JSONException {
         logger.info("Calling I am editing an option");
-        Assert.assertNotNull(optionRepository.findByIdAndDecisionId(1L,1L));
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("name","Go to London");
+        HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), createAuthHeaders());
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + optionsEndpoint, HttpMethod.POST, entity, String.class);
+        Assert.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 
     @When("I click to add a new pro or con")
-    public void iClickToAddANewProOrCon() {
+    public void iClickToAddANewProOrCon() throws JSONException {
         logger.info("Calling I am adding a pro or con");
-        ProCon proCon = new ProCon();
-        proCon.setType("Pro");
-        proCon.setDescription("Making memories with family");
-        proCon.setRating(4.5);
-        Criteria criteria = criteriaRepository.findById(1L).get();
-        decisionService.addProCon(1L, 1L, criteria, proCon);
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("type","pro");
+        requestBody.put("description","Explore a new country");
+        requestBody.put("rating",3.5);
+        HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(),createAuthHeaders());
+        responseEntity = new RestTemplate().exchange(BASE_URL +  port + proConsEndpoint, HttpMethod.POST, entity, String.class);
     }
 
     @Then("The new pro or con is added")
     public void theNewProOrConIsAdded() {
         logger.info("Calling the new pro or con is added");
-        Assert.assertNotNull(proConRepository.findById(1L));
-        Assert.assertNotNull(proConRepository.findByType("Pro"));
-        Assert.assertFalse(optionRepository.findByIdAndDecisionId(1L, 1L).getProConList().isEmpty());
+        Assert.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
+
     @When("I update a pro or con")
     public void iUpdateAProOrCon() {
         logger.info("Calling I update a pro or con");

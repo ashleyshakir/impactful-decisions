@@ -4,6 +4,8 @@ import com.example.impactfuldecisions.exceptions.DecisionExistsException;
 import com.example.impactfuldecisions.models.Criteria;
 import com.example.impactfuldecisions.models.Decision;
 import com.example.impactfuldecisions.models.Option;
+import com.example.impactfuldecisions.models.ProCon;
+import com.example.impactfuldecisions.repository.CriteriaRepository;
 import com.example.impactfuldecisions.service.DecisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,10 +22,12 @@ public class DecisionController {
 
     private final DecisionService decisionService;
     static HashMap<String, Object> message = new HashMap<>();
+    private final CriteriaRepository criteriaRepository;
 
     @Autowired
-    public DecisionController(DecisionService decisionService) {
+    public DecisionController(DecisionService decisionService, CriteriaRepository criteriaRepository) {
         this.decisionService = decisionService;
+        this.criteriaRepository = criteriaRepository;
     }
 
     @PostMapping(path = "/decisions/")
@@ -164,6 +168,29 @@ public class DecisionController {
             message.put("message", "success, option deleted");
             message.put("data", option.get());
             return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
+
+    @PostMapping(path = "/decisions/{decisionId}/options/{optionId}/procons/")
+    public ResponseEntity<?> addProCon (
+            @PathVariable(value = "decisionId")Long decisionId,
+            @PathVariable(value = "optionId")Long optionId,
+            @RequestBody ProCon proConObject,
+            @RequestParam("criteriaId") Long criteriaId) {
+        Optional<Criteria> criteria = criteriaRepository.findById(criteriaId);
+        if(criteria.isPresent()){
+            Optional<ProCon> proCon = Optional.ofNullable(decisionService.addProCon(decisionId, optionId, criteria.get(),proConObject));
+            if(proCon.isEmpty()){
+                message.put("message", "unable to create pro or con");
+                return new ResponseEntity<>(message,HttpStatus.OK);
+            } else {
+                message.put("message", "success, pro or con was added to option");
+                message.put("data", proCon);
+                return new ResponseEntity<>(message, HttpStatus.CREATED);
+            }
+        } else {
+            message.put("message", "unable to assign pro or con to criteria with id " + criteriaId);
+            return new ResponseEntity<>(message,HttpStatus.OK);
         }
     }
 
