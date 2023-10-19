@@ -6,12 +6,10 @@ import com.example.impactfuldecisions.service.DecisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -35,6 +33,19 @@ public class DecisionController {
         } catch (DecisionExistsException e) {
             message.put("message", e.getMessage());
             return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping(path = "/decisions/{decisionId}/")
+    public ResponseEntity<?> getDecision(@PathVariable(value = "decisionId") Long decisionId){
+        Optional<Decision> decision = Optional.of(decisionService.getDecision(decisionId));
+        if(decision.isPresent()){
+            message.put("message","success, decision was retrieved");
+            message.put("data",decision.get());
+            return new ResponseEntity<>(message,HttpStatus.OK);
+        } else {
+            message.put("message","cannot find decision");
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
         }
     }
 }

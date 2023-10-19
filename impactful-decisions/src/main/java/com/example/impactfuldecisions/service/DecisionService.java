@@ -44,13 +44,14 @@ public class DecisionService {
 
     // Testing the business logic for viewing a decision
     public Decision getDecision(Long decisionId) {
-        Optional<Decision> decision = Optional.ofNullable(decisionRepository.findByIdAndUserId(decisionId, 1L));
+        Optional<Decision> decision = Optional.ofNullable(decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId()));
         if (decision.isPresent()) {
             return decision.get();
         } else {
             throw new InformationNotFoundException("A decision with the id of " + decisionId + " does not exist.");
         }
     }
+
     // Testing the business logic for viewing a list of decisions
     public List<Decision> getUserDecisions() {
         List<Decision> decisionList = decisionRepository.findByUserId(1L);

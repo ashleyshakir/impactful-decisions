@@ -113,14 +113,14 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     }
 
     @When("I want to view a decision")
-    public void iWantToViewADecision() {
-        logger.info("Calling I want to view a decision");
-        decision = decisionService.getDecision(1L);
+    public void iWantToViewADecision() throws JSONException {
+        logger.info("Calling I click to view a decision");
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + singleDecisionEndpoint, HttpMethod.GET, new HttpEntity<>(createAuthHeaders()), String.class);
     }
 
     @Then("The decision is retrieved")
     public void theDecisionIsRetrieved() {
-        Assert.assertNotNull(decision);
+        Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     @When("I want to view my list of decisions")
