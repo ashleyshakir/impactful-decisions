@@ -266,7 +266,16 @@ public class DecisionService {
         }
     }
 
-    // Testing the business logic for adding option pros and cons
+    /**
+     * Adds a ProCon to an existing Option based on the provided decisionId, optionId, Criteria object, and ProCon object.
+     *
+     * @param decisionId The unique identifier for the Decision associated with the Option.
+     * @param optionId The unique identifier for the Option to which the ProCon will be added.
+     * @param criteria The Criteria object to which the ProCon is related.
+     * @param proConObject The ProCon object containing the details of the pro or con to be added.
+     * @return The added ProCon object after it's saved in the repository.
+     * @throws InformationNotFoundException If no Option with the given decisionId and optionId exists.
+     */
     public ProCon addProCon(Long decisionId, Long optionId, Criteria criteria, ProCon proConObject) {
         Option option = optionRepository.findByIdAndDecisionId(optionId, decisionId);
         if (option == null) {
@@ -277,7 +286,16 @@ public class DecisionService {
         return proConRepository.save(proConObject);
     }
 
-    // Testing the business logic for updating decision Option
+    /**
+     * Updates an existing ProCon object based on the provided decisionId, optionId, proConId, and ProCon object.
+     *
+     * @param decisionId The unique identifier for the Decision associated with the Option.
+     * @param optionId The unique identifier for the Option to which the ProCon is related.
+     * @param proConId The unique identifier for the ProCon to be updated.
+     * @param proConObject The ProCon object containing the updated details for the pro or con.
+     * @return The updated ProCon object after it's saved in the repository.
+     * @throws InformationNotFoundException If no Option with the given decisionId and optionId exists, or if no ProCon with the given proConId exists.
+     */
     public ProCon updateProCon(Long decisionId, Long optionId, Long proConId, ProCon proConObject) {
         Option option = optionRepository.findByIdAndDecisionId(optionId, decisionId);
         if (option == null) {
@@ -296,7 +314,16 @@ public class DecisionService {
             }
         }
     }
-    // Testing the business logic for deleting decision option
+
+    /**
+     * Deletes a ProCon object based on the provided decisionId, optionId, and proConId.
+     *
+     * @param decisionId The unique identifier for the Decision associated with the Option.
+     * @param optionId The unique identifier for the Option to which the ProCon is related.
+     * @param proConId The unique identifier for the ProCon to be deleted.
+     * @return An Optional containing the deleted ProCon object, or an empty Optional if the ProCon was not found.
+     * @throws InformationNotFoundException If no Option with the given decisionId and optionId exists, or if no ProCon with the given proConId exists.
+     */
     public Optional<ProCon> deleteProCon(Long decisionId, Long optionId, Long proConId) {
         Option option = optionRepository.findByIdAndDecisionId(optionId, decisionId);
         if (option == null) {
@@ -312,6 +339,4 @@ public class DecisionService {
             }
         }
     }
-
-
 }
