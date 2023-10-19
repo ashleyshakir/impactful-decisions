@@ -180,25 +180,24 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     }
 
     @Given("a decision is available")
-    public void aDecisionIsAvailable() {
-        logger.info("Calling a decision is available");
-        Assert.assertNotNull(decisionRepository.findById(1L));
+    public void aDecisionIsAvailable() throws JSONException {
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + singleDecisionEndpoint, HttpMethod.GET, new HttpEntity<>(createAuthHeaders()), String.class);
+        Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     @When("I click to add criteria")
-    public void iClickToAddCriteria() {
-        logger.info("Calling I click to add criteria");
-        Criteria criteria = new Criteria();
-        criteria.setName("Costs");
-        criteria.setWeight(5D);
-        decisionService.addCriteria(1L,criteria);
+    public void iClickToAddCriteria() throws JSONException {
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("name","Price");
+        requestBody.put("weight",4D);
+        HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), createAuthHeaders());
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + criteriaEndpoint, HttpMethod.POST, entity, String.class);
     }
 
     @Then("The criteria is added to the decision")
     public void theCriteriaIsAddedToTheDecision() {
         logger.info("Calling the criteria is added to the decision");
-        Assert.assertNotNull(criteriaRepository.findByName("Costs"));
-        Assert.assertNotNull(decisionRepository.findById(1L).get().getCriteriaList());
+        Assert.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
     @When("I update criteria name or weight")
     public void iUpdateCriteriaNameOrWeight() {

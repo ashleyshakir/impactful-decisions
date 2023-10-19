@@ -1,6 +1,7 @@
 package com.example.impactfuldecisions.controller;
 
 import com.example.impactfuldecisions.exceptions.DecisionExistsException;
+import com.example.impactfuldecisions.models.Criteria;
 import com.example.impactfuldecisions.models.Decision;
 import com.example.impactfuldecisions.service.DecisionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +85,19 @@ public class DecisionController {
             message.put("message", "Decision successfully deleted");
             message.put("data",decision.get());
             return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
+
+    @PostMapping(path = "decisions/{decisionId}/criteria/")
+    public ResponseEntity<?> addCriteria(@PathVariable(value = "decisionId")Long decisionId, @RequestBody Criteria criteriaObject){
+        Optional<Criteria> criteria = Optional.ofNullable(decisionService.addCriteria(decisionId, criteriaObject));
+        if(criteria.isEmpty()){
+            message.put("message", "unable to create criteria.");
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } else {
+            message.put("message", "success, criteria added to decision");
+            message.put("data", criteria);
+            return new ResponseEntity<>(message, HttpStatus.CREATED);
         }
     }
 

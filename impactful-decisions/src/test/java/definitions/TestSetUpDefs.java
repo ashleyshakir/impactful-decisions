@@ -29,5 +29,8 @@ public class TestSetUpDefs {
     public static final String decisionsEndpoint = "/api/decisions/";
     public static final String singleDecisionEndpoint = "/api/decisions/1/";
 
+    // Criteria Endpoints
+    public static final String criteriaEndpoint = "/api/decisions/1/criteria/";
+
 
 }
