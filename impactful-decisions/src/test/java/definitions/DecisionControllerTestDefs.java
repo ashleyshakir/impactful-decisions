@@ -268,5 +268,17 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
         Assert.assertEquals("Updated name",optionRepository.findById(1L).get().getName());
     }
 
+    @When("I delete an option from a decision")
+    public void iDeleteAnOptionFromADecision() {
+        logger.info("I delete an option from a decision");
+        decisionService.deleteOption(1L,1L);
+    }
+
+    @Then("The option is deleted from the decision")
+    public void theOptionIsDeletedFromTheDecision() {
+        Assert.assertTrue(optionRepository.findById(1L).isEmpty());
+        Assert.assertTrue(decisionRepository.findById(1L).get().getOptionList().isEmpty());
+    }
+
 
 }

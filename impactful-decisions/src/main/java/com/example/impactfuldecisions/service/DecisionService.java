@@ -168,5 +168,22 @@ public class DecisionService {
         }
     }
 
+    // Testing the business logic for deleting decision option
+    public Optional<Option> deleteOption(Long decisionId, Long optionId) {
+        Decision decision = decisionRepository.findByIdAndUserId(decisionId, 1L);
+        if (decision == null) {
+            throw new InformationNotFoundException("Decision not found");
+        } else {
+            Optional<Option> optionOptional = optionRepository.findByDecisionId(decisionId)
+                    .stream().filter(option -> option.getId().equals(optionId)).findFirst();
+            if (optionOptional.isEmpty()) {
+                throw new InformationNotFoundException("Option does not exist");
+            } else {
+                optionRepository.deleteById(optionId);
+                return optionOptional;
+            }
+        }
+    }
+
 
 }
