@@ -1,22 +1,13 @@
 package definitions;
 
-import com.example.impactfuldecisions.exceptions.DecisionExistsException;
-import com.example.impactfuldecisions.models.Criteria;
-import com.example.impactfuldecisions.models.Decision;
-import com.example.impactfuldecisions.models.Option;
-import com.example.impactfuldecisions.models.ProCon;
 import com.example.impactfuldecisions.models.analysis.RecommendedOption;
-import com.example.impactfuldecisions.repository.CriteriaRepository;
 import com.example.impactfuldecisions.repository.DecisionRepository;
-import com.example.impactfuldecisions.repository.OptionRepository;
-import com.example.impactfuldecisions.repository.ProConRepository;
 import com.example.impactfuldecisions.service.DecisionAnalysisService;
-import com.example.impactfuldecisions.service.DecisionService;
+
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -27,20 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Clock;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 public class DecisionControllerTestDefs extends TestSetUpDefs{
 
-    private static JSONObject requestBody;
-    private static Response response;
-
-    // Service testing variables
-    Exception caughtException = null;
-    Decision decision = new Decision();
-    List<Decision> decisionList;
     private static ResponseEntity<String> responseEntity;
     private static double optionScore1;
     private static double optionScore2;
@@ -48,14 +30,6 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
 
     @Autowired
     private DecisionRepository decisionRepository;
-    @Autowired
-    private DecisionService decisionService;
-    @Autowired
-    private CriteriaRepository criteriaRepository;
-    @Autowired
-    private OptionRepository optionRepository;
-    @Autowired
-    private ProConRepository proConRepository;
     @Autowired
     private DecisionAnalysisService decisionAnalysisService;
 
