@@ -24,6 +24,15 @@ public class DecisionAnalysisService {
         this.decisionRepository = decisionRepository;
     }
 
+    /**
+     * Calculates the overall score of a specific Option based on its associated pros and cons.
+     * Each pro and con has a rating and is tied to a Criteria object that has a weight.
+     * The overall score is calculated as the sum of weighted pro ratings minus the sum of weighted con ratings.
+     *
+     * @param decisionId The unique identifier for the Decision that contains the Option.
+     * @param optionId The unique identifier for the Option whose score needs to be calculated.
+     * @return The calculated overall score for the specified Option.
+     */
     public double calculateOptionScore(Long decisionId, Long optionId){
         Decision decision = decisionRepository.findById(decisionId).get();
         Option optionObject = decision.getOptionList().stream().filter(option -> option.getId().equals(optionId)).findFirst().get();
@@ -69,6 +78,14 @@ public class DecisionAnalysisService {
         return overallOptionScore;
     }
 
+    /**
+     * Calculates the scores for all Options associated with a specific Decision.
+     * After calculating each Option's score, this method determines the Option with the highest score
+     * and returns it along with the scores of all Options.
+     *
+     * @param decisionId The unique identifier for the Decision whose Options' scores need to be calculated.
+     * @return An object of type RecommendedOption that contains the Option with the highest score and a map of all Option scores.
+     */
     public RecommendedOption calculateAllOptionScores(Long decisionId) {
         Decision decision = decisionRepository.findById(decisionId).get();
         Map<Long, Double> optionScores = new HashMap<>();
