@@ -296,6 +296,22 @@ public class DecisionService {
             }
         }
     }
+    // Testing the business logic for deleting decision option
+    public Optional<ProCon> deleteProCon(Long decisionId, Long optionId, Long proConId) {
+        Option option = optionRepository.findByIdAndDecisionId(optionId, decisionId);
+        if (option == null) {
+            throw new InformationNotFoundException("Option not found");
+        } else {
+            Optional<ProCon> proConOptional = proConRepository.findByOptionId(optionId)
+                    .stream().filter(proCon -> proCon.getId().equals(proConId)).findFirst();
+            if (proConOptional.isEmpty()) {
+                throw new InformationNotFoundException("A Pro or Con for that option does not exist");
+            } else {
+                proConRepository.deleteById(proConId);
+                return proConOptional;
+            }
+        }
+    }
 
 
 }

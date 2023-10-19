@@ -326,5 +326,17 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
         Assert.assertEquals("updated description",proConRepository.findById(1L).get().getDescription());
     }
 
+    @When("I delete a pro or con")
+    public void iDeleteAProOrCon() {
+        logger.info("Calling I delete a pro or con");
+        decisionService.deleteProCon(1L,1L,1L);
+    }
+
+    @Then("The pro or con is deleted")
+    public void theProOrConIsDeleted() {
+        logger.info("Calling the pro or con is deleted");
+        Assert.assertTrue(optionRepository.findByIdAndDecisionId(1L,1L).getProConList().isEmpty());
+    }
+
 
 }

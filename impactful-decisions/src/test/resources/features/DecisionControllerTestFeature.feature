@@ -39,5 +39,5 @@ Feature: Rest API functionalities
     Then The new pro or con is added
     When I update a pro or con
     Then The pro or con is updated
-#    When I delete a pro or con
-#    Then The pro or con is deleted
+    When I delete a pro or con
+    Then The pro or con is deleted
