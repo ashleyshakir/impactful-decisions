@@ -254,5 +254,19 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
         Assert.assertNotNull(decisionRepository.findById(1L).get().getOptionList());
     }
 
+    @When("I update an option name")
+    public void iUpdateAnOptionName() {
+        logger.info("Calling I update an option name");
+        Option updatedOption = new Option();
+        updatedOption.setName("Updated name");
+        decisionService.updateOption(1L,1L,updatedOption);
+    }
+
+    @Then("The option name is updated")
+    public void theOptionNameIsUpdated() {
+        logger.info("Calling the option is updated");
+        Assert.assertEquals("Updated name",optionRepository.findById(1L).get().getName());
+    }
+
 
 }

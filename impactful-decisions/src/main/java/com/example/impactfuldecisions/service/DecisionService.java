@@ -150,5 +150,23 @@ public class DecisionService {
         return optionRepository.save(optionObject);
     }
 
+    // Testing the business logic for updating decision Option
+    public Option updateOption(Long decisionId, Long optionId, Option optionObject) {
+        Decision decision = decisionRepository.findByIdAndUserId(decisionId, 1L);
+        if (decision == null) {
+            throw new InformationNotFoundException("Decision not found");
+        } else {
+            Optional<Option> optionOptional = optionRepository.findByDecisionId(decisionId)
+                    .stream().filter(option -> option.getId().equals(optionId)).findFirst();
+            if (optionOptional.isEmpty()) {
+                throw new InformationNotFoundException("option does not exist");
+            } else {
+                Option existingOption = optionOptional.get();
+                existingOption.setName(optionObject.getName());
+                return optionRepository.save(existingOption);
+            }
+        }
+    }
+
 
 }
