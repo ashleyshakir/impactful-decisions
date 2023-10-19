@@ -234,24 +234,24 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     }
 
     @Given("I am editing a decision")
-    public void iAmEditingADecision() {
-        logger.info("Calling I am editing a decision");
-        Assert.assertNotNull(decisionRepository.findById(1L));
+    public void iAmEditingADecision() throws JSONException {
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + singleDecisionEndpoint, HttpMethod.GET, new HttpEntity<>(createAuthHeaders()), String.class);
+        Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     @When("I click to add an option")
-    public void iClickToAddAnOption() {
+    public void iClickToAddAnOption() throws JSONException {
         logger.info("Calling I click to add an option");
-        Option option = new Option();
-        option.setName("Go to London");
-        decisionService.addOption(1L,option);
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("name","Go to London");
+        HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), createAuthHeaders());
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + optionsEndpoint, HttpMethod.POST, entity, String.class);
     }
 
     @Then("The option is added to the decision")
     public void theOptionIsAddedToTheDecision() {
         logger.info("Calling the option is added to the decision");
-        Assert.assertNotNull(optionRepository.findByName("Go to London"));
-        Assert.assertNotNull(decisionRepository.findById(1L).get().getOptionList());
+        Assert.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
 
     @When("I update an option name")

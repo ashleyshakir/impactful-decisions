@@ -3,6 +3,7 @@ package com.example.impactfuldecisions.controller;
 import com.example.impactfuldecisions.exceptions.DecisionExistsException;
 import com.example.impactfuldecisions.models.Criteria;
 import com.example.impactfuldecisions.models.Decision;
+import com.example.impactfuldecisions.models.Option;
 import com.example.impactfuldecisions.service.DecisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -124,6 +125,19 @@ public class DecisionController {
             message.put("message", "success, criteria deleted");
             message.put("data",criteria.get());
             return new ResponseEntity<>(message,HttpStatus.OK);
+        }
+    }
+
+    @PostMapping(path = "decisions/{decisionId}/options/")
+    public ResponseEntity<?> addOption(@PathVariable(value = "decisionId") Long decisionId, @RequestBody Option optionObject) {
+        Optional<Option> option = Optional.ofNullable(decisionService.addOption(decisionId, optionObject));
+        if (option.isEmpty()) {
+            message.put("message", "unable to create option.");
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } else {
+            message.put("message", "success, option added to decision");
+            message.put("data", option);
+            return new ResponseEntity<>(message, HttpStatus.CREATED);
         }
     }
 
