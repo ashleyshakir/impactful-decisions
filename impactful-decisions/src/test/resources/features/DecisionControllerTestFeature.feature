@@ -48,3 +48,8 @@ Feature: Rest API functionalities
     Then That options score is shown
     When I click to analyze the decision
     Then I am given a recommended option
+
+  Scenario: Endpoints for option recommendation provides accurate results
+    Given I have a new decision to analyze
+    When I want to analyze the decision
+    Then I am shown a recommended option

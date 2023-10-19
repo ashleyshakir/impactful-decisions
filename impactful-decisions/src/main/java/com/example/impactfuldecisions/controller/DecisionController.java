@@ -5,7 +5,9 @@ import com.example.impactfuldecisions.models.Criteria;
 import com.example.impactfuldecisions.models.Decision;
 import com.example.impactfuldecisions.models.Option;
 import com.example.impactfuldecisions.models.ProCon;
+import com.example.impactfuldecisions.models.analysis.RecommendedOption;
 import com.example.impactfuldecisions.repository.CriteriaRepository;
+import com.example.impactfuldecisions.service.DecisionAnalysisService;
 import com.example.impactfuldecisions.service.DecisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,12 +23,14 @@ import java.util.Optional;
 public class DecisionController {
 
     private final DecisionService decisionService;
+    private final DecisionAnalysisService decisionAnalysisService;
     static HashMap<String, Object> message = new HashMap<>();
     private final CriteriaRepository criteriaRepository;
 
     @Autowired
-    public DecisionController(DecisionService decisionService, CriteriaRepository criteriaRepository) {
+    public DecisionController(DecisionService decisionService, DecisionAnalysisService decisionAnalysisService, CriteriaRepository criteriaRepository) {
         this.decisionService = decisionService;
+        this.decisionAnalysisService = decisionAnalysisService;
         this.criteriaRepository = criteriaRepository;
     }
 
@@ -221,6 +225,12 @@ public class DecisionController {
             message.put("data", proCon.get());
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
+    }
+
+    @GetMapping(path = "/decisions/{decisionId}/recommendation/")
+    public ResponseEntity<RecommendedOption> getDecisionRecommendation(@PathVariable(value = "decisionId") Long decisionId) {
+        RecommendedOption recommendation = decisionAnalysisService.calculateAllOptionScores(decisionId);
+        return new ResponseEntity<>(recommendation, HttpStatus.OK);
     }
 
 

@@ -378,5 +378,22 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
         Assert.assertEquals(4.4,recommendation.getOptionScores().get(2L),0.00001);
     }
 
+    @Given("I have a new decision to analyze")
+    public void iHaveANewDecisionToAnalyze() throws JSONException {
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + singleDecisionEndpoint, HttpMethod.GET, new HttpEntity<>(createAuthHeaders()), String.class);
+        Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+
+    @When("I want to analyze the decision")
+    public void iWantToAnalyzeTheDecision() throws JSONException {
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + recommendationEndpoint, HttpMethod.GET, new HttpEntity<>(createAuthHeaders()), String.class);
+    }
+
+    @Then("I am shown a recommended option")
+    public void iAmShownARecommendedOption() {
+        Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
 
 }
