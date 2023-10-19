@@ -2,9 +2,11 @@ package com.example.impactfuldecisions.seed;
 
 import com.example.impactfuldecisions.models.Criteria;
 import com.example.impactfuldecisions.models.Decision;
+import com.example.impactfuldecisions.models.Option;
 import com.example.impactfuldecisions.models.User;
 import com.example.impactfuldecisions.repository.CriteriaRepository;
 import com.example.impactfuldecisions.repository.DecisionRepository;
+import com.example.impactfuldecisions.repository.OptionRepository;
 import com.example.impactfuldecisions.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -22,16 +24,19 @@ public class UserDataLoader implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final DecisionRepository decisionRepository;
     private final CriteriaRepository criteriaRepository;
+    private final OptionRepository optionRepository;
 
     @Autowired
     public UserDataLoader(UserRepository userRepository,
                           DecisionRepository decisionRepository,
                           CriteriaRepository criteriaRepository,
+                          OptionRepository optionRepository,
                           @Lazy PasswordEncoder passwordEncoder)
     {
         this.userRepository = userRepository;
         this.decisionRepository = decisionRepository;
         this.criteriaRepository = criteriaRepository;
+        this.optionRepository = optionRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -70,5 +75,15 @@ public class UserDataLoader implements CommandLineRunner {
         criteria3.setWeight(0.2);
         criteria3.setDecision(decision1);
         criteriaRepository.save(criteria3);
+
+        Option option1 = new Option();
+        option1.setName("Go to London");
+        option1.setDecision(decision1);
+        optionRepository.save(option1);
+
+        Option option2 = new Option();
+        option2.setName("Stay home");
+        option2.setDecision(decision1);
+        optionRepository.save(option2);
     }
 }
