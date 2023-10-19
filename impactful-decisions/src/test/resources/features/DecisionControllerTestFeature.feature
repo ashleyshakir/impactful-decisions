@@ -4,8 +4,8 @@ Feature: Rest API functionalities
     Given I am logged into my account securely
     When I create a new decision and add a new title
     Then My new decision is created
-#    When I create a new decision with an existing title
-#    Then Then a DecisionExistsException is thrown
+    When I create a new decision with an existing title
+    Then Then a DecisionExistsException is thrown
 #    When I want to view a decision
 #    Then The decision is retrieved
 #    When I want to view my list of decisions

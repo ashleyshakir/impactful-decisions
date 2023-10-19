@@ -1,5 +1,6 @@
 package com.example.impactfuldecisions.controller;
 
+import com.example.impactfuldecisions.exceptions.DecisionExistsException;
 import com.example.impactfuldecisions.models.Decision;
 import com.example.impactfuldecisions.service.DecisionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,13 @@ public class DecisionController {
 
     @PostMapping(path = "/decisions/")
     public ResponseEntity<?> createDecision(@RequestBody Decision decisionObject) {
-        Decision decision = decisionService.createDecision(decisionObject);
-        if (decision != null) {
+        try {
+            Decision decision = decisionService.createDecision(decisionObject);
             message.put("message", "success, decision created");
             message.put("data", decision);
             return new ResponseEntity<>(message, HttpStatus.CREATED);
-        } else {
-            message.put("message", "unable to create decision.");
+        } catch (DecisionExistsException e) {
+            message.put("message", e.getMessage());
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }

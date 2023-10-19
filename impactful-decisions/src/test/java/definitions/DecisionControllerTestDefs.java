@@ -94,23 +94,22 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     }
 
     @When("I create a new decision with an existing title")
-    public void iCreateANewDecisionWithAnExistingTitle() {
+    public void iCreateANewDecisionWithAnExistingTitle() throws JSONException {
         logger.info("Calling I create a new decision with an existing title");
-        try{
-            Decision decision = new Decision();
-            decision.setTitle("Should I buy a new car?");
-            decisionService.createDecision(decision);
-        } catch (Exception e){
-            caughtException = e;
-        }
+        // Creating authorization and content type
+        HttpHeaders headers = createAuthHeaders();
+        // Creating a new decision object to pass through
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("title", "New Test Decision");
+        // Build our post request
+        HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), headers);
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + decisionsEndpoint, HttpMethod.POST, entity, String.class);
     }
 
     @Then("Then a DecisionExistsException is thrown")
     public void thenADecisionExistsExceptionIsThrown() {
         logger.info("Calling Then a DecisionExistsException is thrown");
-        Assert.assertNotNull("Expected an exception to be thrown", caughtException);
-        Assert.assertTrue("Expected DecisionExistsException but found " + caughtException,
-                caughtException instanceof DecisionExistsException);
+        Assert.assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
     }
 
     @When("I want to view a decision")
