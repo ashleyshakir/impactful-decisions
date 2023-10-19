@@ -42,7 +42,13 @@ public class DecisionService {
         return userDetails.getUser();
     }
 
-    // Testing the business logic for creating a decision
+    /**
+     * Creates a new Decision based on the provided Decision object.
+     *
+     * @param decisionObject The Decision object containing the details of the decision to be created.
+     * @return The created Decision object after it's saved in the repository.
+     * @throws DecisionExistsException If a decision with the same title already exists.
+     */
     public Decision createDecision(Decision decisionObject) {
         if (decisionRepository.findByTitle(decisionObject.getTitle()) != null) {
             throw new DecisionExistsException("You have already created a decision with the title: " + decisionObject.getTitle());
@@ -52,7 +58,13 @@ public class DecisionService {
         }
     }
 
-    // Testing the business logic for viewing a decision
+    /**
+     * Retrieves a Decision based on the provided decisionId.
+     *
+     * @param decisionId The unique identifier for the Decision to be retrieved.
+     * @return The Decision object if found.
+     * @throws InformationNotFoundException If no decision with the given id exists for the current logged-in user.
+     */
     public Decision getDecision(Long decisionId) {
         Optional<Decision> decision = Optional.ofNullable(decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId()));
         if (decision.isPresent()) {
@@ -62,7 +74,12 @@ public class DecisionService {
         }
     }
 
-    // Testing the business logic for viewing a list of decisions
+    /**
+     * Retrieves a list of Decisions associated with the current logged-in user.
+     *
+     * @return A list of Decision objects related to the current user.
+     * @throws InformationNotFoundException If the user has no associated decisions.
+     */
     public List<Decision> getUserDecisions() {
         List<Decision> decisionList = decisionRepository.findByUserId(DecisionService.getCurrentLoggedInUser().getId());
         if (decisionList.isEmpty()) {
@@ -71,7 +88,16 @@ public class DecisionService {
         return decisionList;
     }
 
-    // Testing the business logic for updating a decision - may change to just updating a title and description and make a separate one for updating isResolved
+    /**
+     * Updates an existing Decision based on the provided decisionId and Decision object.
+     *
+     * This method may change the title, description, and isResolved status of the Decision.
+     *
+     * @param decisionId The unique identifier for the Decision to be updated.
+     * @param decisionObject The Decision object containing the updated details.
+     * @return The updated Decision object after it's saved in the repository.
+     * @throws InformationNotFoundException If no decision with the given id exists for the current logged-in user.
+     */
     public Decision updateDecision(Long decisionId, Decision decisionObject) {
         Optional<Decision> decision = Optional.ofNullable(decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId()));
         if (decision.isEmpty()) {
@@ -84,7 +110,13 @@ public class DecisionService {
         return decisionRepository.save(existingDecision);
     }
 
-    // Testing the business logic for deleting a decision
+    /**
+     * Deletes an existing Decision based on the provided decisionId.
+     *
+     * @param decisionId The unique identifier for the Decision to be deleted.
+     * @return An Optional containing the deleted Decision object, if it was successfully deleted.
+     * @throws InformationNotFoundException If no decision with the given id exists for the current logged-in user.
+     */
     public Optional<Decision> deleteDecision(Long decisionId) {
         Optional<Decision> decision = Optional.ofNullable(decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId()));
         if (decision.isEmpty()) {
@@ -94,7 +126,14 @@ public class DecisionService {
         return decision;
     }
 
-    // Testing the business logic for adding decision criteria
+    /**
+     * Adds criteria to an existing Decision based on the provided decisionId and Criteria object.
+     *
+     * @param decisionId The unique identifier for the Decision to which the criteria will be added.
+     * @param criteriaObject The Criteria object containing the details of the criteria to be added.
+     * @return The added Criteria object after it's saved in the repository.
+     * @throws InformationNotFoundException If no decision with the given id exists for the current logged-in user.
+     */
     public Criteria addCriteria(Long decisionId, Criteria criteriaObject) {
         Decision decision = decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId());
         if (decision == null) {
@@ -104,7 +143,16 @@ public class DecisionService {
         return criteriaRepository.save(criteriaObject);
     }
 
-    // Testing the business logic for updating decision criteria
+    /**
+     * Updates an existing Criteria based on the provided decisionId, criteriaId, and Criteria object.
+     *
+     * @param decisionId The unique identifier for the Decision associated with the criteria to be updated.
+     * @param criteriaId The unique identifier for the Criteria to be updated.
+     * @param criteriaObject The Criteria object containing the updated details.
+     * @return The updated Criteria object after it's saved in the repository.
+     * @throws InformationNotFoundException If no decision with the given decisionId exists for the current logged-in user,
+     * or if no criteria with the given criteriaId exists.
+     */
     public Criteria updateCriteria(Long decisionId, Long criteriaId, Criteria criteriaObject) {
         Decision decision = decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId());
         if (decision == null) {
@@ -123,7 +171,15 @@ public class DecisionService {
         }
     }
 
-    // Testing the business logic for deleting decision criteria
+    /**
+     * Deletes an existing Criteria based on the provided decisionId and criteriaId.
+     *
+     * @param decisionId The unique identifier for the Decision associated with the criteria to be deleted.
+     * @param criteriaId The unique identifier for the Criteria to be deleted.
+     * @return An Optional containing the deleted Criteria object, if it was successfully deleted.
+     * @throws InformationNotFoundException If no decision with the given decisionId exists for the current logged-in user,
+     * or if no criteria with the given criteriaId exists.
+     */
     public Optional<Criteria> deleteCriteria(Long decisionId, Long criteriaId) {
         Decision decision = decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId());
         if (decision == null) {
@@ -140,7 +196,14 @@ public class DecisionService {
         }
     }
 
-    // Testing the business logic for adding decision options
+    /**
+     * Adds an option to an existing Decision based on the provided decisionId and Option object.
+     *
+     * @param decisionId The unique identifier for the Decision to which the option will be added.
+     * @param optionObject The Option object containing the details of the option to be added.
+     * @return The added Option object after it's saved in the repository.
+     * @throws InformationNotFoundException If no decision with the given id exists for the current logged-in user.
+     */
     public Option addOption(Long decisionId, Option optionObject) {
         Decision decision = decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId());
         if (decision == null) {
@@ -150,7 +213,16 @@ public class DecisionService {
         return optionRepository.save(optionObject);
     }
 
-    // Testing the business logic for updating decision Option
+    /**
+     * Updates an existing Option based on the provided decisionId, optionId, and Option object.
+     *
+     * @param decisionId The unique identifier for the Decision associated with the option to be updated.
+     * @param optionId The unique identifier for the Option to be updated.
+     * @param optionObject The Option object containing the updated details.
+     * @return The updated Option object after it's saved in the repository.
+     * @throws InformationNotFoundException If no decision with the given decisionId exists for the current logged-in user,
+     * or if no option with the given optionId exists.
+     */
     public Option updateOption(Long decisionId, Long optionId, Option optionObject) {
         Decision decision = decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId());
         if (decision == null) {
@@ -168,7 +240,15 @@ public class DecisionService {
         }
     }
 
-    // Testing the business logic for deleting decision option
+    /**
+     * Deletes an existing Option based on the provided decisionId and optionId.
+     *
+     * @param decisionId The unique identifier for the Decision associated with the option to be deleted.
+     * @param optionId The unique identifier for the Option to be deleted.
+     * @return An Optional containing the deleted Option object, if it was successfully deleted.
+     * @throws InformationNotFoundException If no decision with the given decisionId exists for the current logged-in user,
+     * or if no option with the given optionId exists.
+     */
     public Optional<Option> deleteOption(Long decisionId, Long optionId) {
         Decision decision = decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId());
         if (decision == null) {
