@@ -35,6 +35,7 @@ public class TestSetUpDefs {
 
     // Option Endpoints
     public static final String optionsEndpoint = "/api/decisions/1/options/";
+    public static final String singleOptionEndpoint = "/api/decisions/1/options/1/";
 
 
 }

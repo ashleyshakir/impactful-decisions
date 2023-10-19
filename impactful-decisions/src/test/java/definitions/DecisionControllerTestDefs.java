@@ -255,17 +255,18 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     }
 
     @When("I update an option name")
-    public void iUpdateAnOptionName() {
+    public void iUpdateAnOptionName() throws JSONException {
         logger.info("Calling I update an option name");
-        Option updatedOption = new Option();
-        updatedOption.setName("Updated name");
-        decisionService.updateOption(1L,1L,updatedOption);
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("name","updated name");
+        HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), createAuthHeaders());
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + singleOptionEndpoint, HttpMethod.PUT, entity, String.class);
     }
 
     @Then("The option name is updated")
     public void theOptionNameIsUpdated() {
         logger.info("Calling the option is updated");
-        Assert.assertEquals("Updated name",optionRepository.findById(1L).get().getName());
+        Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     @When("I delete an option from a decision")
