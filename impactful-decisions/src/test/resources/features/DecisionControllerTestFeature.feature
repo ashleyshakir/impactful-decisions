@@ -32,3 +32,12 @@ Feature: Rest API functionalities
     Then The option name is updated
     When I delete an option from a decision
     Then The option is deleted from the decision
+
+  Scenario: User able to add, update, and delete option pros and cons
+    Given I am editing an option
+    When I click to add a new pro or con
+    Then The new pro or con is added
+    When I update a pro or con
+    Then The pro or con is updated
+    When I delete a pro or con
+    Then The pro or con is deleted
