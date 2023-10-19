@@ -118,6 +118,22 @@ public class DecisionService {
         }
     }
 
+    // Testing the business logic for deleting decision criteria
+    public Optional<Criteria> deleteCriteria(Long decisionId, Long criteriaId) {
+        Decision decision = decisionRepository.findByIdAndUserId(decisionId, 1L);
+        if (decision == null) {
+            throw new InformationNotFoundException("Decision not found");
+        } else {
+            Optional<Criteria> criteriaOptional = criteriaRepository.findByDecisionId(decisionId)
+                    .stream().filter(criteria -> criteria.getId().equals(criteriaId)).findFirst();
+            if (criteriaOptional.isEmpty()) {
+                throw new InformationNotFoundException("criteria does not exist");
+            } else {
+                criteriaRepository.deleteById(criteriaId);
+                return criteriaOptional;
+            }
+        }
+    }
 
 
 }

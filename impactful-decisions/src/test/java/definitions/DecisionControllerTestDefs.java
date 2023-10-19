@@ -217,5 +217,17 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
         Assert.assertEquals(4D, criteriaRepository.findById(1L).get().getWeight(), 0.0001);
     }
 
+    @When("I delete criteria from a decision")
+    public void iDeleteCriteriaFromADecision() {
+        logger.info("I delete criteria from a decision");
+        decisionService.deleteCriteria(1L,1L);
+    }
+
+    @Then("It is deleted from the decision")
+    public void itIsDeletedFromTheDecision() {
+        Assert.assertTrue(criteriaRepository.findById(1L).isEmpty());
+        Assert.assertTrue(decisionRepository.findById(1L).get().getCriteriaList().isEmpty());
+    }
+
 
 }
