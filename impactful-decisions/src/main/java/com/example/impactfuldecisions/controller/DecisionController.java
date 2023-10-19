@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -48,4 +49,24 @@ public class DecisionController {
             return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping(path = "/decisions/")
+    public ResponseEntity<?> getUserDecisions(){
+        List<Decision> decisionList = decisionService.getUserDecisions();
+        if(decisionList.isEmpty()){
+            message.put("message", "There are no decisions to be made :)");
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "Able to retrieve decisions");
+            message.put("data", decisionList);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
+
+
+
+
+
+
+
 }

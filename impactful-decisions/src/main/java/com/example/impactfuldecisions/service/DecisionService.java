@@ -54,12 +54,13 @@ public class DecisionService {
 
     // Testing the business logic for viewing a list of decisions
     public List<Decision> getUserDecisions() {
-        List<Decision> decisionList = decisionRepository.findByUserId(1L);
+        List<Decision> decisionList = decisionRepository.findByUserId(DecisionService.getCurrentLoggedInUser().getId());
         if (decisionList.isEmpty()) {
-            throw new InformationNotFoundException("You have no albums!");
+            throw new InformationNotFoundException("You have no decisions!");
         }
         return decisionList;
     }
+
     // Testing the business logic for updating a decision - may change to just updating a title and description and make a separate one for updating isResolved
     public Decision updateDecision(Long decisionId, Decision decisionObject) {
         Optional<Decision> decision = Optional.ofNullable(decisionRepository.findByIdAndUserId(decisionId, 1L));

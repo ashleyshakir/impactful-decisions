@@ -9,6 +9,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.json.JSONException;
@@ -21,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public class DecisionControllerTestDefs extends TestSetUpDefs{
 
@@ -124,15 +126,28 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     }
 
     @When("I want to view my list of decisions")
-    public void iWantToViewMyListOfDecisions() {
-        logger.info("Calling I want to view my list of decisions");
-        decisionList = decisionService.getUserDecisions();
+    public void iWantToViewMyListOfDecisions() throws JSONException {
+        logger.info("Calling I click to view all decisions");
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + decisionsEndpoint, HttpMethod.GET, new HttpEntity<>(createAuthHeaders()), String.class);
     }
 
     @Then("The list of decisions is retrieved")
     public void theListOfDecisionsIsRetrieved() {
-        Assert.assertNotNull(decisionList);
+        logger.info("Calling I can see all my decisions");
+        String responseBody = String.valueOf(responseEntity.getBody());
+        logger.info("Response body: " + responseBody);
+        if (responseBody != null && !responseBody.isEmpty()) {
+            // Parse the JSON response to extract the list of decisions
+            List<Map<String, String>> decisions = JsonPath.from(String.valueOf(responseEntity.getBody())).get("data");
+            // Assert that the response status is OK and there are decisions available
+            Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+            Assert.assertTrue(decisions.size() > 0);
+        } else {
+            // If the response is null or empty, fail the test
+            Assert.fail("Received null or empty response");
+        }
     }
+
     @When("I update a decision")
     public void iUpdateADecision() {
         logger.info("Calling I update a decision");
