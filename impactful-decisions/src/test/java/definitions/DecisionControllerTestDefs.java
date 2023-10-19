@@ -9,6 +9,7 @@ import com.example.impactfuldecisions.repository.CriteriaRepository;
 import com.example.impactfuldecisions.repository.DecisionRepository;
 import com.example.impactfuldecisions.repository.OptionRepository;
 import com.example.impactfuldecisions.repository.ProConRepository;
+import com.example.impactfuldecisions.service.DecisionAnalysisService;
 import com.example.impactfuldecisions.service.DecisionService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -40,6 +41,8 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     Decision decision = new Decision();
     List<Decision> decisionList;
     private static ResponseEntity<String> responseEntity;
+    private static double optionScore1;
+    private static double optionScore2;
 
     @Autowired
     private DecisionRepository decisionRepository;
@@ -51,6 +54,8 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     private OptionRepository optionRepository;
     @Autowired
     private ProConRepository proConRepository;
+    @Autowired
+    private DecisionAnalysisService decisionAnalysisService;
 
     // For testing secure endpoints:
     public String getJWTToken() throws JSONException {
@@ -339,6 +344,25 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     public void theProOrConIsDeleted() {
         logger.info("Calling the pro or con is deleted");
         Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    @Given("I have a decision to analyze")
+    public void iHaveADecisionToAnalyze() {
+        logger.info("Calling a decision is available");
+        Assert.assertNotNull(decisionRepository.findById(1L));
+    }
+
+    @When("I want to see the score of an option")
+    public void iWantToSeeTheScoreOfAnOption() {
+        logger.info("Calling I click to analyze the decision");
+        optionScore1 = decisionAnalysisService.calculateOptionScore(1L,1L);
+        optionScore2 = decisionAnalysisService.calculateOptionScore(1L,2L);
+    }
+
+    @Then("That options score is shown")
+    public void thatOptionsScoreIsShown() {
+        Assert.assertEquals(-4.0,optionScore1,0.0001);
+        Assert.assertEquals(4.4,optionScore2,0.0001);
     }
 
 
