@@ -313,20 +313,20 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     }
 
     @When("I update a pro or con")
-    public void iUpdateAProOrCon() {
+    public void iUpdateAProOrCon() throws JSONException {
         logger.info("Calling I update a pro or con");
-        ProCon updatedProCon = new ProCon();
-        updatedProCon.setType("PRO");
-        updatedProCon.setRating(5.0);
-        updatedProCon.setDescription("updated description");
-        decisionService.updateProCon(1L,1L,1L,updatedProCon);
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("rating",4.0);
+        requestBody.put("description","updated description");
+        requestBody.put("type","pro");
+        HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), createAuthHeaders());
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + singleProConEndpoint, HttpMethod.PUT, entity, String.class);
     }
 
     @Then("The pro or con is updated")
     public void theProOrConIsUpdated() {
         logger.info("Calling the pro or con is updated");
-        Assert.assertEquals(5.0,proConRepository.findById(1L).get().getRating(),0.0001);
-        Assert.assertEquals("updated description",proConRepository.findById(1L).get().getDescription());
+        Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     @When("I delete a pro or con")

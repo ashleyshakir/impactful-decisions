@@ -194,6 +194,22 @@ public class DecisionController {
         }
     }
 
+    @PutMapping(path = "/decisions/{decisionId}/options/{optionId}/procons/{proconId}")
+    public ResponseEntity<?> updateProCon (
+            @PathVariable(value = "decisionId")Long decisionId,
+            @PathVariable(value = "optionId")Long optionId,
+            @PathVariable(value = "proconId")Long proconId,
+            @RequestBody ProCon proConObject){
+        Optional<ProCon> proCon = Optional.ofNullable(decisionService.updateProCon(decisionId,optionId,proconId,proConObject));
+        if (proCon.isEmpty()) {
+            message.put("message", "cannot find pro or con");
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "success, pro or con was updated");
+            message.put("data", proCon.get());
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
 
 
 
