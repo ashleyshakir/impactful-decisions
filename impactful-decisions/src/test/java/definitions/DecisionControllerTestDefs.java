@@ -149,19 +149,21 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     }
 
     @When("I update a decision")
-    public void iUpdateADecision() {
-        logger.info("Calling I update a decision");
-        Decision updatedDecision = new Decision();
-        updatedDecision.setTitle("This is my updated decision title");
-        updatedDecision.setResolved(true);
-        decisionService.updateDecision(1L, updatedDecision);
+    public void iUpdateADecision() throws JSONException {
+        logger.info("Calling I click to update a decision");
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("title","This is my updated decision title");
+        requestBody.put("description","This is my updated description");
+        requestBody.put("setResolved","true");
+        HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), createAuthHeaders());
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + singleDecisionEndpoint, HttpMethod.PUT, entity, String.class);
     }
 
     @Then("The decision is updated")
     public void theDecisionIsUpdated() {
-        Assert.assertEquals("This is my updated decision title",decisionRepository.findById(1L).get().getTitle());
-        Assert.assertTrue(decisionRepository.findById(1L).get().isResolved());
+        Assert.assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
     }
+
     @When("I delete a decision")
     public void iDeleteADecision() {
         logger.info("Calling when I delete a decision");

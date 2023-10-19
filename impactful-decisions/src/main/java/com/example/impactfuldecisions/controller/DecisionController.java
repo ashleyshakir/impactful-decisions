@@ -62,6 +62,18 @@ public class DecisionController {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
+    @PutMapping(path = "/decisions/{decisionId}/")
+    public ResponseEntity<?> updateDecision(@PathVariable(value = "decisionId")Long decisionId, @RequestBody Decision decisionObject){
+        Optional<Decision> decision = Optional.ofNullable(decisionService.updateDecision(decisionId, decisionObject));
+        if(decision.isPresent()){
+            message.put("message", "Decision updated successfully");
+            message.put("data",decision.get());
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } else {
+            message.put("message", "Decision not found");
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        }
+    }
 
 
 

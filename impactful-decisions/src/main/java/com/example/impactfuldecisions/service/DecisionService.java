@@ -63,7 +63,7 @@ public class DecisionService {
 
     // Testing the business logic for updating a decision - may change to just updating a title and description and make a separate one for updating isResolved
     public Decision updateDecision(Long decisionId, Decision decisionObject) {
-        Optional<Decision> decision = Optional.ofNullable(decisionRepository.findByIdAndUserId(decisionId, 1L));
+        Optional<Decision> decision = Optional.ofNullable(decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId()));
         if (decision.isEmpty()) {
             throw new InformationNotFoundException("You cannot update a decision that does not exist!");
         }
