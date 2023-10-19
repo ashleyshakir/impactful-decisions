@@ -4,9 +4,11 @@ import com.example.impactfuldecisions.exceptions.DecisionExistsException;
 import com.example.impactfuldecisions.exceptions.InformationNotFoundException;
 import com.example.impactfuldecisions.models.Criteria;
 import com.example.impactfuldecisions.models.Decision;
+import com.example.impactfuldecisions.models.Option;
 import com.example.impactfuldecisions.models.User;
 import com.example.impactfuldecisions.repository.CriteriaRepository;
 import com.example.impactfuldecisions.repository.DecisionRepository;
+import com.example.impactfuldecisions.repository.OptionRepository;
 import com.example.impactfuldecisions.security.MyUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,12 +22,15 @@ public class DecisionService {
 
     private DecisionRepository decisionRepository;
     private CriteriaRepository criteriaRepository;
+    private OptionRepository optionRepository;
 
     @Autowired
     public void setDecisionRepository(DecisionRepository decisionRepository,
-                                      CriteriaRepository criteriaRepository) {
+                                      CriteriaRepository criteriaRepository,
+                                      OptionRepository optionRepository) {
         this.decisionRepository = decisionRepository;
         this.criteriaRepository = criteriaRepository;
+        this.optionRepository = optionRepository;
     }
     /**
      * Get the currently logged-in user
@@ -133,6 +138,16 @@ public class DecisionService {
                 return criteriaOptional;
             }
         }
+    }
+
+    // Testing the business logic for adding decision options
+    public Option addOption(Long decisionId, Option optionObject) {
+        Decision decision = decisionRepository.findByIdAndUserId(decisionId, 1L);
+        if (decision == null) {
+            throw new InformationNotFoundException("Decision not found");
+        }
+        optionObject.setDecision(decision);
+        return optionRepository.save(optionObject);
     }
 
 

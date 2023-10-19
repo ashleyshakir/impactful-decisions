@@ -3,8 +3,10 @@ package definitions;
 import com.example.impactfuldecisions.exceptions.DecisionExistsException;
 import com.example.impactfuldecisions.models.Criteria;
 import com.example.impactfuldecisions.models.Decision;
+import com.example.impactfuldecisions.models.Option;
 import com.example.impactfuldecisions.repository.CriteriaRepository;
 import com.example.impactfuldecisions.repository.DecisionRepository;
+import com.example.impactfuldecisions.repository.OptionRepository;
 import com.example.impactfuldecisions.service.DecisionService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -43,6 +45,8 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     private DecisionService decisionService;
     @Autowired
     private CriteriaRepository criteriaRepository;
+    @Autowired
+    private OptionRepository optionRepository;
 
     // For testing secure endpoints:
     public String getJWTToken() throws JSONException {
@@ -227,6 +231,27 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     public void itIsDeletedFromTheDecision() {
         logger.info("The criteria is deleted from the decision");
         Assert.assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
+    }
+
+    @Given("I am editing a decision")
+    public void iAmEditingADecision() {
+        logger.info("Calling I am editing a decision");
+        Assert.assertNotNull(decisionRepository.findById(1L));
+    }
+
+    @When("I click to add an option")
+    public void iClickToAddAnOption() {
+        logger.info("Calling I click to add an option");
+        Option option = new Option();
+        option.setName("Go to London");
+        decisionService.addOption(1L,option);
+    }
+
+    @Then("The option is added to the decision")
+    public void theOptionIsAddedToTheDecision() {
+        logger.info("Calling the option is added to the decision");
+        Assert.assertNotNull(optionRepository.findByName("Go to London"));
+        Assert.assertNotNull(decisionRepository.findById(1L).get().getOptionList());
     }
 
 
