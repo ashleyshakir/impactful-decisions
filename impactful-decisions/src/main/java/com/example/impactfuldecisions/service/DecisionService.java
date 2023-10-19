@@ -101,7 +101,7 @@ public class DecisionService {
 
     // Testing the business logic for updating decision criteria
     public Criteria updateCriteria(Long decisionId, Long criteriaId, Criteria criteriaObject) {
-        Decision decision = decisionRepository.findByIdAndUserId(decisionId, 1L);
+        Decision decision = decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId());
         if (decision == null) {
             throw new InformationNotFoundException("Decision not found");
         } else {

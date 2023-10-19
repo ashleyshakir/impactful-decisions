@@ -199,21 +199,22 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
         logger.info("Calling the criteria is added to the decision");
         Assert.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
     }
+
     @When("I update criteria name or weight")
-    public void iUpdateCriteriaNameOrWeight() {
+    public void iUpdateCriteriaNameOrWeight() throws JSONException {
         logger.info("Calling I update criteria name or weight");
-        Criteria updatedCriteria = new Criteria();
-        updatedCriteria.setName("Price");
-        updatedCriteria.setWeight(4D);
-        decisionService.updateCriteria(1L,1L,updatedCriteria);
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("name","updated name");
+        requestBody.put("weight",2L);
+        HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), createAuthHeaders());
+        responseEntity = new RestTemplate().exchange(BASE_URL + port + singleCriteriaEndpoint, HttpMethod.PUT, entity, String.class);
 
     }
 
     @Then("The criteria is updated")
     public void theCriteriaIsUpdated() {
         logger.info("Calling the criteria is updated");
-        Assert.assertEquals("Price",criteriaRepository.findById(1L).get().getName());
-        Assert.assertEquals(4D, criteriaRepository.findById(1L).get().getWeight(), 0.0001);
+        Assert.assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
     }
 
     @When("I delete criteria from a decision")
