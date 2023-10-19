@@ -14,3 +14,4 @@ Feature: Rest API functionalities
     Then The decision is updated
     When I delete a decision
     Then The decision is deleted
+
