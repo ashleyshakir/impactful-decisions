@@ -46,5 +46,5 @@ Feature: Rest API functionalities
     Given I have a decision to analyze
     When I want to see the score of an option
     Then That options score is shown
-#    When I click to analyze the decision
-#    Then I am given a recommended option
+    When I click to analyze the decision
+    Then I am given a recommended option

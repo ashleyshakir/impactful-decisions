@@ -5,6 +5,7 @@ import com.example.impactfuldecisions.models.Criteria;
 import com.example.impactfuldecisions.models.Decision;
 import com.example.impactfuldecisions.models.Option;
 import com.example.impactfuldecisions.models.ProCon;
+import com.example.impactfuldecisions.models.analysis.RecommendedOption;
 import com.example.impactfuldecisions.repository.CriteriaRepository;
 import com.example.impactfuldecisions.repository.DecisionRepository;
 import com.example.impactfuldecisions.repository.OptionRepository;
@@ -43,6 +44,7 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     private static ResponseEntity<String> responseEntity;
     private static double optionScore1;
     private static double optionScore2;
+    private static RecommendedOption recommendation;
 
     @Autowired
     private DecisionRepository decisionRepository;
@@ -363,6 +365,17 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
     public void thatOptionsScoreIsShown() {
         Assert.assertEquals(-4.0,optionScore1,0.0001);
         Assert.assertEquals(4.4,optionScore2,0.0001);
+    }
+    @When("I click to analyze the decision")
+    public void iClickToAnalyzeTheDecision() {
+        logger.info("Calling I click to analyze the decision");
+        recommendation = decisionAnalysisService.calculateAllOptionScores(1L);
+    }
+
+    @Then("I am given a recommended option")
+    public void iAmGivenARecommendedOption() {
+        Assert.assertEquals("Stay home",recommendation.getRecommendedOption().getName());
+        Assert.assertEquals(4.4,recommendation.getOptionScores().get(2L),0.00001);
     }
 
 

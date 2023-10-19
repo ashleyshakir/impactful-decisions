@@ -4,11 +4,14 @@ import com.example.impactfuldecisions.models.Criteria;
 import com.example.impactfuldecisions.models.Decision;
 import com.example.impactfuldecisions.models.Option;
 import com.example.impactfuldecisions.models.ProCon;
+import com.example.impactfuldecisions.models.analysis.RecommendedOption;
 import com.example.impactfuldecisions.repository.DecisionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,5 +67,22 @@ public class DecisionAnalysisService {
         overallOptionScore = totalProsScore - totalConsScore;
 
         return overallOptionScore;
+    }
+
+    public RecommendedOption calculateAllOptionScores(Long decisionId) {
+        Decision decision = decisionRepository.findById(decisionId).get();
+        Map<Long, Double> optionScores = new HashMap<>();
+        Option recommendedOption = null;
+        double highestScore = Double.NEGATIVE_INFINITY;
+        for (Option option : decision.getOptionList()) {
+            double optionScore = calculateOptionScore(decisionId, option.getId());
+            optionScores.put(option.getId(), optionScore);
+
+            if (optionScore > highestScore) {
+                highestScore = optionScore;
+                recommendedOption = option;
+            }
+        }
+        return new RecommendedOption(recommendedOption, optionScores);
     }
 }
