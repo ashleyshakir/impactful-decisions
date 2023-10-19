@@ -4,6 +4,11 @@ import com.example.impactfuldecisions.models.Option;
 
 import java.util.Map;
 
+/**
+ * Represents a recommendation result containing the highest scoring Option and the scores for all Options.
+ * This class acts as a container for analysis results related to Decision-making.
+ *
+ */
 public class RecommendedOption {
     private Option recommendedOption;
     private Map<Long, Double> optionScores;
