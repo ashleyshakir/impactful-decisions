@@ -99,6 +99,25 @@ public class DecisionService {
         return criteriaRepository.save(criteriaObject);
     }
 
+    // Testing the business logic for updating decision criteria
+    public Criteria updateCriteria(Long decisionId, Long criteriaId, Criteria criteriaObject) {
+        Decision decision = decisionRepository.findByIdAndUserId(decisionId, 1L);
+        if (decision == null) {
+            throw new InformationNotFoundException("Decision not found");
+        } else {
+            Optional<Criteria> criteriaOptional = criteriaRepository.findByDecisionId(decisionId)
+                    .stream().filter(criteria -> criteria.getId().equals(criteriaId)).findFirst();
+            if (criteriaOptional.isEmpty()) {
+                throw new InformationNotFoundException("criteria does not exist");
+            } else {
+                Criteria existingCriteria = criteriaOptional.get();
+                existingCriteria.setName(criteriaObject.getName());
+                existingCriteria.setWeight(criteriaObject.getWeight());
+                return criteriaRepository.save(existingCriteria);
+            }
+        }
+    }
+
 
 
 }

@@ -200,6 +200,22 @@ public class DecisionControllerTestDefs extends TestSetUpDefs{
         Assert.assertNotNull(criteriaRepository.findByName("Costs"));
         Assert.assertNotNull(decisionRepository.findById(1L).get().getCriteriaList());
     }
+    @When("I update criteria name or weight")
+    public void iUpdateCriteriaNameOrWeight() {
+        logger.info("Calling I update criteria name or weight");
+        Criteria updatedCriteria = new Criteria();
+        updatedCriteria.setName("Price");
+        updatedCriteria.setWeight(4D);
+        decisionService.updateCriteria(1L,1L,updatedCriteria);
+
+    }
+
+    @Then("The criteria is updated")
+    public void theCriteriaIsUpdated() {
+        logger.info("Calling the criteria is updated");
+        Assert.assertEquals("Price",criteriaRepository.findById(1L).get().getName());
+        Assert.assertEquals(4D, criteriaRepository.findById(1L).get().getWeight(), 0.0001);
+    }
 
 
 }
