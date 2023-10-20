@@ -136,6 +136,7 @@ public class UserDataLoader implements CommandLineRunner {
         decision2.setTitle("Which car should I get?");
         decision2.setDescription("Deciding which car to get!");
         decision2.setCreationDate(LocalDateTime.now(Clock.systemDefaultZone()));
+        decision2.setResolved(true);
         decision2.setUser(user1);
         decisionRepository.save(decision2);
 
@@ -166,5 +167,22 @@ public class UserDataLoader implements CommandLineRunner {
         option4.setName("4Runner");
         option4.setDecision(decision2);
         optionRepository.save(option4);
+
+        Decision decision3 = new Decision();
+        decision3.setTitle("Should I get another dog?");
+        decision3.setDescription("Deciding whether or not it is a good idea to bring another dog into the family.");
+        decision3.setCreationDate(LocalDateTime.now(Clock.systemDefaultZone()));
+        decision3.setUser(user1);
+        decisionRepository.save(decision3);
+
+        Option option5 = new Option();
+        option5.setName("Yes, get a dog!");
+        option5.setDecision(decision3);
+        optionRepository.save(option5);
+
+        Option option6 = new Option();
+        option6.setName("No more dogs!");
+        option6.setDecision(decision3);
+        optionRepository.save(option6);
     }
 }
