@@ -137,14 +137,14 @@ public class DecisionController {
     }
 
     @PostMapping(path = "decisions/{decisionId}/options/")
-    public ResponseEntity<?> addOption(@PathVariable(value = "decisionId") Long decisionId, @RequestBody Option optionObject) {
-        Optional<Option> option = Optional.ofNullable(decisionService.addOption(decisionId, optionObject));
-        if (option.isEmpty()) {
+    public ResponseEntity<?> addOptions(@PathVariable(value = "decisionId") Long decisionId, @RequestBody Option[] optionObjects) {
+        Optional<List<Option>> options = Optional.ofNullable(decisionService.addOptions(decisionId, optionObjects));
+        if (options.isEmpty()) {
             message.put("message", "unable to create option.");
             return new ResponseEntity<>(message, HttpStatus.OK);
         } else {
-            message.put("message", "success, option added to decision");
-            message.put("data", option);
+            message.put("message", "success, option added to decision with id: "+ decisionId);
+            message.put("data", options.get());
             return new ResponseEntity<>(message, HttpStatus.CREATED);
         }
     }

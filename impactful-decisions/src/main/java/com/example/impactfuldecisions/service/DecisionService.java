@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -208,13 +209,18 @@ public class DecisionService {
      * @return The added Option object after it's saved in the repository.
      * @throws InformationNotFoundException If no decision with the given id exists for the current logged-in user.
      */
-    public Option addOption(Long decisionId, Option optionObject) {
+    public List<Option> addOptions(Long decisionId, Option[] optionObjects) {
         Decision decision = decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId());
         if (decision == null) {
             throw new InformationNotFoundException("Decision not found");
         }
-        optionObject.setDecision(decision);
-        return optionRepository.save(optionObject);
+        List<Option> savedOptions = new ArrayList<>();
+        for(Option option : optionObjects){
+            option.setDecision(decision);
+            Option savedOption = optionRepository.save(option);
+            savedOptions.add(savedOption);
+        }
+        return savedOptions;
     }
 
     /**
