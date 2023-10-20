@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +56,7 @@ public class DecisionService {
         if (decisionRepository.findByTitle(decisionObject.getTitle()) != null) {
             throw new DecisionExistsException("You have already created a decision with the title: " + decisionObject.getTitle());
         } else {
+            decisionObject.setCreationDate(LocalDateTime.now());
             decisionObject.setUser(DecisionService.getCurrentLoggedInUser());
             return decisionRepository.save(decisionObject);
         }

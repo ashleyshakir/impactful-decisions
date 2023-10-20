@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Component
 public class UserDataLoader implements CommandLineRunner {
@@ -51,7 +52,7 @@ public class UserDataLoader implements CommandLineRunner {
         Decision decision1 = new Decision();
         decision1.setTitle("Should I go on the London trip?");
         decision1.setDescription("Deciding whether or not it is a good idea to travel right now.");
-        decision1.setCreationDate(LocalDate.now(Clock.systemDefaultZone()));
+        decision1.setCreationDate(LocalDateTime.now(Clock.systemDefaultZone()));
         decision1.setUser(user1);
         decisionRepository.save(decision1);
 
@@ -130,5 +131,40 @@ public class UserDataLoader implements CommandLineRunner {
         proCon6.setDescription("I will get normal sleep and be able to function at 100 percent!");
         proCon6.setRating(7.0);
         proConRepository.save(proCon6);
+
+        Decision decision2 = new Decision();
+        decision2.setTitle("Which car should I get?");
+        decision2.setDescription("Deciding which car to get!");
+        decision2.setCreationDate(LocalDateTime.now(Clock.systemDefaultZone()));
+        decision2.setUser(user1);
+        decisionRepository.save(decision2);
+
+        Criteria criteria4 = new Criteria();
+        criteria4.setName("Price");
+        criteria4.setWeight(5.0);
+        criteria4.setDecision(decision2);
+        criteriaRepository.save(criteria4);
+
+        Criteria criteria5 = new Criteria();
+        criteria5.setName("Mileage");
+        criteria5.setWeight(4.5);
+        criteria5.setDecision(decision2);
+        criteriaRepository.save(criteria5);
+
+        Criteria criteria6 = new Criteria();
+        criteria6.setName("Miles per Gallon");
+        criteria6.setWeight(4.5);
+        criteria6.setDecision(decision2);
+        criteriaRepository.save(criteria6);
+
+        Option option3 = new Option();
+        option3.setName("Bronco");
+        option3.setDecision(decision2);
+        optionRepository.save(option3);
+
+        Option option4 = new Option();
+        option4.setName("4Runner");
+        option4.setDecision(decision2);
+        optionRepository.save(option4);
     }
 }
