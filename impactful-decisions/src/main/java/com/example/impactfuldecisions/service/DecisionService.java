@@ -54,7 +54,7 @@ public class DecisionService {
      * @throws DecisionExistsException If a decision with the same title already exists.
      */
     public Decision createDecision(Decision decisionObject) {
-        if (decisionRepository.findByTitle(decisionObject.getTitle()) != null) {
+        if (decisionRepository.findByTitleAndUserId(decisionObject.getTitle(), DecisionService.getCurrentLoggedInUser().getId()) != null) {
             throw new DecisionExistsException("You have already created a decision with the title: " + decisionObject.getTitle());
         } else {
             decisionObject.setCreationDate(LocalDateTime.now());
@@ -132,20 +132,25 @@ public class DecisionService {
     }
 
     /**
-     * Adds criteria to an existing Decision based on the provided decisionId and Criteria object.
+     * Adds criteria to an existing Decision based on the provided decisionId and array of Criteria objects.
      *
      * @param decisionId The unique identifier for the Decision to which the criteria will be added.
-     * @param criteriaObject The Criteria object containing the details of the criteria to be added.
-     * @return The added Criteria object after it's saved in the repository.
+     * @param criteriaObjects The Criteria objects containing the details of each criterion to be added.
+     * @return The added Criteria objects after they are saved in the repository.
      * @throws InformationNotFoundException If no decision with the given id exists for the current logged-in user.
      */
-    public Criteria addCriteria(Long decisionId, Criteria criteriaObject) {
+    public List<Criteria> addCriteria(Long decisionId, Criteria[] criteriaObjects) {
         Decision decision = decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId());
         if (decision == null) {
             throw new InformationNotFoundException("Decision not found");
         }
-        criteriaObject.setDecision(decision);
-        return criteriaRepository.save(criteriaObject);
+        List<Criteria> savedCriteria = new ArrayList<>();
+        for(Criteria criteria : criteriaObjects){
+            criteria.setDecision(decision);
+            Criteria savedCriterion = criteriaRepository.save(criteria);
+            savedCriteria.add(savedCriterion);
+        }
+        return savedCriteria;
     }
 
     /**
@@ -202,10 +207,10 @@ public class DecisionService {
     }
 
     /**
-     * Adds an option to an existing Decision based on the provided decisionId and Option object.
+     * Adds an array of options to an existing Decision based on the provided decisionId and Option objects.
      *
      * @param decisionId The unique identifier for the Decision to which the option will be added.
-     * @param optionObject The Option object containing the details of the option to be added.
+     * @param optionObjects The Option object array contains the details of the options to be added.
      * @return The added Option object after it's saved in the repository.
      * @throws InformationNotFoundException If no decision with the given id exists for the current logged-in user.
      */

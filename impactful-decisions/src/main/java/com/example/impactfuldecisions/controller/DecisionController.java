@@ -62,7 +62,7 @@ public class DecisionController {
 
     @GetMapping(path = "/decisions/")
     public ResponseEntity<?> getUserDecisions(){
-        List<Decision> decisionList = decisionService.getUserDecisions();
+        Optional<List<Decision>> decisionList = Optional.ofNullable(decisionService.getUserDecisions());
         if(decisionList.isEmpty()){
             message.put("message", "There are no decisions to be made :)");
             return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
@@ -72,6 +72,7 @@ public class DecisionController {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
+
     @PutMapping(path = "/decisions/{decisionId}/")
     public ResponseEntity<?> updateDecision(@PathVariable(value = "decisionId")Long decisionId, @RequestBody Decision decisionObject){
         Optional<Decision> decision = Optional.ofNullable(decisionService.updateDecision(decisionId, decisionObject));
@@ -98,14 +99,14 @@ public class DecisionController {
     }
 
     @PostMapping(path = "decisions/{decisionId}/criteria/")
-    public ResponseEntity<?> addCriteria(@PathVariable(value = "decisionId")Long decisionId, @RequestBody Criteria criteriaObject){
-        Optional<Criteria> criteria = Optional.ofNullable(decisionService.addCriteria(decisionId, criteriaObject));
+    public ResponseEntity<?> addCriteria(@PathVariable(value = "decisionId")Long decisionId, @RequestBody Criteria[] criteriaObjects){
+        Optional<List<Criteria>> criteria = Optional.ofNullable(decisionService.addCriteria(decisionId, criteriaObjects));
         if(criteria.isEmpty()){
             message.put("message", "unable to create criteria.");
             return new ResponseEntity<>(message, HttpStatus.OK);
         } else {
-            message.put("message", "success, criteria added to decision");
-            message.put("data", criteria);
+            message.put("message", "success, criteria added to decision with id: "+ decisionId);
+            message.put("data", criteria.get());
             return new ResponseEntity<>(message, HttpStatus.CREATED);
         }
     }
