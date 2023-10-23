@@ -209,7 +209,7 @@ public class DecisionController {
             @PathVariable(value = "optionId")Long optionId,
             @RequestBody ProCon proConObject,
             @RequestParam("criteriaName") String criteriaName) {
-        Optional<Criteria> criteria = Optional.ofNullable(criteriaRepository.findByName(criteriaName));
+        Optional<Criteria> criteria = Optional.ofNullable(criteriaRepository.findByNameAndDecisionId(criteriaName, decisionId));
         if(criteria.isPresent()){
             Optional<ProCon> proCon = Optional.ofNullable(decisionService.addProCon(decisionId, optionId, criteria.get(),proConObject));
             if(proCon.isEmpty()){
