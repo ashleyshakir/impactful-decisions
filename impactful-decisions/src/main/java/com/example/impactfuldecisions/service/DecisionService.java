@@ -154,6 +154,22 @@ public class DecisionService {
     }
 
     /**
+     * Retrieves a list of criteria belonging to the specified decision ID for the current logged-in user.
+     *
+     * @param decisionId The unique identifier of the decision.
+     * @return A list of criterion objects associated with the specified decision ID.
+     * @throws InformationNotFoundException If the decision with the given ID doesn't exist.
+     */
+    public List<Criteria> getDecisionCriteria(Long decisionId) {
+        Optional<Decision> optionalDecision = Optional.ofNullable(decisionRepository.findByIdAndUserId(decisionId, getCurrentLoggedInUser().getId()));
+        if(optionalDecision.isPresent()){
+            return optionalDecision.get().getCriteriaList();
+        } else {
+            throw new InformationNotFoundException("Decision with id: " + decisionId + " not found.");
+        }
+    }
+
+    /**
      * Updates an existing Criteria based on the provided decisionId, criteriaId, and Criteria object.
      *
      * @param decisionId The unique identifier for the Decision associated with the criteria to be updated.

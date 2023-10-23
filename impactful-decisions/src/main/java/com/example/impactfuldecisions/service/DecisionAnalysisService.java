@@ -48,7 +48,7 @@ public class DecisionAnalysisService {
         for (ProCon pro : pros){
             // Retrieve the associated criteria and its weight
             Criteria criteria = pro.getCriteria();
-            double criteriaWeight = criteria.getWeight();
+            double criteriaWeight = criteria.getWeight() / 100;
 
             // retrieve the rating of the pro
             double proRating = pro.getRating();
@@ -62,7 +62,7 @@ public class DecisionAnalysisService {
         for(ProCon con : cons){
             // Retrieve the associated criteria and its weight
             Criteria criteria = con.getCriteria();
-            double criteriaWeight = criteria.getWeight();
+            double criteriaWeight = criteria.getWeight() / 100;
 
             // retrieve the rating of the con
             double conRating = con.getRating();

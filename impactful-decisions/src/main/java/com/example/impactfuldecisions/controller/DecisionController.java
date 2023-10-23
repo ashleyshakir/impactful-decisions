@@ -111,7 +111,21 @@ public class DecisionController {
         }
     }
 
-    @PutMapping(path = "decisions/{decisionId}/criteria/{criteriaId}/")
+    @GetMapping(path="decisions/{decisionId}/criteria/")
+    public ResponseEntity<?> getDecisionCriteria(@PathVariable(value = "decisionId")Long decisionId) {
+        List<Criteria> criteriaList = decisionService.getDecisionCriteria(decisionId);
+        if(criteriaList.isEmpty()){
+            message.put("message", "cannot find criteria for decision with id "+ decisionId);
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "success");
+            message.put("data", criteriaList);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
+
+
+        @PutMapping(path = "decisions/{decisionId}/criteria/{criteriaId}/")
     public ResponseEntity<?> updateCriteria(@PathVariable(value = "decisionId") Long decisionId, @PathVariable(value = "criteriaId")Long criteriaId, @RequestBody Criteria criteriaObject){
         Optional<Criteria> criteria = Optional.ofNullable(decisionService.updateCriteria(decisionId, criteriaId, criteriaObject));
         if(criteria.isEmpty()){
