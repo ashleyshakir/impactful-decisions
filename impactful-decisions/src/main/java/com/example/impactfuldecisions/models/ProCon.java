@@ -44,6 +44,10 @@ public class ProCon {
         this.criteria = criteria;
     }
 
+    public Long getCriteriaId() {
+        return (criteria != null) ? criteria.getId() : null;
+    }
+
     public Long getId() {
         return id;
     }
