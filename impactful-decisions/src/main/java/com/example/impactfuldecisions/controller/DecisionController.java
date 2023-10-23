@@ -208,8 +208,8 @@ public class DecisionController {
             @PathVariable(value = "decisionId")Long decisionId,
             @PathVariable(value = "optionId")Long optionId,
             @RequestBody ProCon proConObject,
-            @RequestParam("criteriaId") Long criteriaId) {
-        Optional<Criteria> criteria = criteriaRepository.findById(criteriaId);
+            @RequestParam("criteriaName") String criteriaName) {
+        Optional<Criteria> criteria = Optional.ofNullable(criteriaRepository.findByName(criteriaName));
         if(criteria.isPresent()){
             Optional<ProCon> proCon = Optional.ofNullable(decisionService.addProCon(decisionId, optionId, criteria.get(),proConObject));
             if(proCon.isEmpty()){
@@ -221,7 +221,7 @@ public class DecisionController {
                 return new ResponseEntity<>(message, HttpStatus.CREATED);
             }
         } else {
-            message.put("message", "unable to assign pro or con to criteria with id " + criteriaId);
+            message.put("message", "unable to assign pro or con to criteria with name " + criteriaName);
             return new ResponseEntity<>(message,HttpStatus.OK);
         }
     }
