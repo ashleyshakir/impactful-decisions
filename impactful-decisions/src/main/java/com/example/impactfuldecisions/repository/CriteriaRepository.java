@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface CriteriaRepository extends JpaRepository<Criteria, Long> {
     List<Criteria> findByDecisionId(Long decisionId);
-    Criteria findByName(String name);
+    Criteria findByNameAndDecisionId(String name, Long decisionId);
 }
