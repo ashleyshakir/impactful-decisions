@@ -91,12 +91,33 @@ public class DecisionAnalysisService {
         Map<Long, Double> optionScores = new HashMap<>();
         Option recommendedOption = null;
         double highestScore = Double.NEGATIVE_INFINITY;
+        double lowestScore = Double.POSITIVE_INFINITY;
         for (Option option : decision.getOptionList()) {
             double optionScore = calculateOptionScore(decisionId, option.getId());
             optionScores.put(option.getId(), optionScore);
 
             if (optionScore > highestScore) {
                 highestScore = optionScore;
+            }
+            if (optionScore < lowestScore) {
+                lowestScore = optionScore;
+            }
+        }
+        // Calculate offset
+        double offset = 0;
+        if (lowestScore < 0) {
+            offset = Math.abs(lowestScore) + 1;
+        }
+        // Apply offset to each score
+        for (Map.Entry<Long, Double> entry : optionScores.entrySet()) {
+            optionScores.put(entry.getKey(), entry.getValue() + offset);
+        }
+        // Find the recommended option again, based on the adjusted scores
+        highestScore = Double.NEGATIVE_INFINITY;
+        for (Option option : decision.getOptionList()) {
+            double adjustedScore = optionScores.get(option.getId());
+            if (adjustedScore > highestScore) {
+                highestScore = adjustedScore;
                 recommendedOption = option;
             }
         }

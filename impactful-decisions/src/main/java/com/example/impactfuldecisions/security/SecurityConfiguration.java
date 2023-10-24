@@ -27,7 +27,7 @@ public class SecurityConfiguration {
         return new JwtRequestFilter();
     }
 
-    // "/auth/users/login/", "/auth/users/register/
+
     // Bean for configuring the security filter chain.
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
