@@ -244,8 +244,9 @@ public class DecisionController {
             @PathVariable(value = "decisionId")Long decisionId,
             @PathVariable(value = "optionId")Long optionId,
             @PathVariable(value = "proconId")Long proconId,
-            @RequestBody ProCon proConObject){
-        Optional<ProCon> proCon = Optional.ofNullable(decisionService.updateProCon(decisionId,optionId,proconId,proConObject));
+            @RequestBody ProCon proConObject,
+            @RequestParam("criteriaName") String criteriaName){
+        Optional<ProCon> proCon = Optional.ofNullable(decisionService.updateProCon(decisionId, optionId, proconId, proConObject, criteriaName));
         if (proCon.isEmpty()) {
             message.put("message", "cannot find pro or con");
             return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
@@ -255,6 +256,7 @@ public class DecisionController {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
+
     @DeleteMapping(path = "/decisions/{decisionId}/options/{optionId}/procons/{proconId}")
     public ResponseEntity<?> deleteProCon (@PathVariable(value = "decisionId")Long decisionId, @PathVariable(value = "optionId")Long optionId, @PathVariable(value = "proconId")Long proconId) {
         Optional<ProCon> proCon = decisionService.deleteProCon(decisionId,optionId, proconId);

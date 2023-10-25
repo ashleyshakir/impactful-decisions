@@ -359,7 +359,7 @@ public class DecisionService {
      * @return The updated ProCon object after it's saved in the repository.
      * @throws InformationNotFoundException If no Option with the given decisionId and optionId exists, or if no ProCon with the given proConId exists.
      */
-    public ProCon updateProCon(Long decisionId, Long optionId, Long proConId, ProCon proConObject) {
+    public ProCon updateProCon(Long decisionId, Long optionId, Long proConId, ProCon proConObject, String criteriaName) {
         Option option = optionRepository.findByIdAndDecisionId(optionId, decisionId);
         if (option == null) {
             throw new InformationNotFoundException("Option not found");
@@ -373,6 +373,14 @@ public class DecisionService {
                 existingProCon.setType(proConObject.getType());
                 existingProCon.setRating(proConObject.getRating());
                 existingProCon.setDescription(proConObject.getDescription());
+                // Fetch Criteria using criteriaName
+                Optional<Criteria> criteriaOptional = Optional.ofNullable(criteriaRepository.findByNameAndDecisionId(criteriaName, decisionId));
+                if (criteriaOptional.isEmpty()) {
+                    throw new InformationNotFoundException("Criteria with name " + criteriaName + " not found");
+                }
+                Criteria criteria = criteriaOptional.get();
+                existingProCon.setCriteria(criteria);
+
                 return proConRepository.save(existingProCon);
             }
         }
