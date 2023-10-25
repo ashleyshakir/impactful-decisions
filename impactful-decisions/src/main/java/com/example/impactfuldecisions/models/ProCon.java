@@ -48,6 +48,10 @@ public class ProCon {
         return (criteria != null) ? criteria.getId() : null;
     }
 
+    public String getCriteriaName() {
+        return (criteria != null) ? criteria.getName() : null;
+    }
+
     public Long getId() {
         return id;
     }
