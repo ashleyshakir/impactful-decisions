@@ -125,7 +125,7 @@ public class DecisionController {
     }
 
 
-        @PutMapping(path = "decisions/{decisionId}/criteria/{criteriaId}/")
+    @PutMapping(path = "decisions/{decisionId}/criteria/{criteriaId}/")
     public ResponseEntity<?> updateCriteria(@PathVariable(value = "decisionId") Long decisionId, @PathVariable(value = "criteriaId")Long criteriaId, @RequestBody Criteria criteriaObject){
         Optional<Criteria> criteria = Optional.ofNullable(decisionService.updateCriteria(decisionId, criteriaId, criteriaObject));
         if(criteria.isEmpty()){
@@ -223,6 +223,19 @@ public class DecisionController {
         } else {
             message.put("message", "unable to assign pro or con to criteria with name " + criteriaName);
             return new ResponseEntity<>(message,HttpStatus.OK);
+        }
+    }
+
+    @GetMapping(path = "/decisions/{decisionId}/options/{optionId}/procons/")
+    public ResponseEntity<?> getOptionProCons (@PathVariable (value = "decisionId") Long decisionId, @PathVariable (value = "optionId") Long optionId){
+        List<ProCon> proConList = decisionService.getOptionProCons(decisionId,optionId);
+        if(proConList.isEmpty()){
+            message.put("message", "cannot find pros or cons for option with id "+ optionId);
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "success");
+            message.put("data", proConList);
+            return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
 

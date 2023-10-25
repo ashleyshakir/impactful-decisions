@@ -333,6 +333,23 @@ public class DecisionService {
     }
 
     /**
+     * Retrieves a list of pros and cons belonging to the specified option ID for the specific decision.
+     *
+     * @param decisionId The unique identifier of the decision.
+     * @param optionId The unique identifier of the option.
+     * @return A list of pro-con objects associated with the specified optionId.
+     * @throws InformationNotFoundException If the option with the given ID doesn't exist.
+     */
+    public List<ProCon> getOptionProCons(Long decisionId, Long optionId){
+        Optional<Option> option = Optional.ofNullable(optionRepository.findByIdAndDecisionId(optionId, decisionId));
+        if(option.isPresent()){
+            return option.get().getProConList();
+        } else {
+            throw new InformationNotFoundException("Option with id: " + optionId + " not found.");
+        }
+    }
+
+    /**
      * Updates an existing ProCon object based on the provided decisionId, optionId, proConId, and ProCon object.
      *
      * @param decisionId The unique identifier for the Decision associated with the Option.
