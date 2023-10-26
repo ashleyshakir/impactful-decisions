@@ -62,20 +62,29 @@ I have utilized GitHub Projects as a resource for project planning and managemen
 
 #### User-Centric Design
 <details>
-  <summary><b>Backend User Stories</b></summary>
+<summary>Backend User Stories</summary>
 
-| User Story                      | Description                                                                                                                    |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| **User Registration**           | As a user, I want to register an account, providing my username, email address, and password.                                  |
-| **User Login**                  | As a user, I want to log in to my account using my email address and password.                                                 |
-| **Create Decision**             | As a user, I want to create a new decision, specifying a title and description for the decision.                               |
-| **Delete Decision**             | As a user, I want to delete a decision, removing all criteria, options, and pros and cons associated with it.                  |
-| **Define Criteria**             | As a user, I want to define criteria for my decision, including the name and weight of each criterion.                         |
-| **Add Options**                 | As a user, I want to add options for my decision, providing names for each option.                                             |
-| **List Pros and Cons**          | As a user, I want to list pros and cons for each option, associating them with criteria and assigning ratings.   
-| **Update Decision**             | As a user, I want to edit an existing decision, allowing me to modify any aspects of it such as its title, description, options, criteria, pros, cons, etc. |              |
-| **Calculate and View Analysis** | As a user, I want to calculate and view the analysis of my decision, including the score for each option and a recommendation. |
+- **User Registration:** As a user, I can register an account, providing my username, email address, and password, so that I can access the application.
+
+- **User Login:** As a user, I can log in to my account using my email address and password, so that I can access my personalized dashboard.
+
+- **Create Decision:** As a user, I can create a new decision, specifying a title and description for the decision, so that I can make informed choices.
+
+- **Delete Decision:** As a user, I can delete a decision, removing all criteria, options, and pros and cons associated with it, in case I no longer need it.
+
+- **Define Criteria:** As a user, I can define criteria for my decision, including the name and weight of each criterion, to tailor the evaluation process to my needs.
+
+- **Add Options:** As a user, I can add options for my decision, providing names for each option, to consider various possibilities.
+
+- **List Pros and Cons:** As a user, I can list pros and cons for each option, associating them with criteria and assigning ratings, for a comprehensive evaluation.
+
+- **Update Decision:** As a user, I can edit an existing decision, allowing me to modify any aspects of it such as its title, description, options, criteria, pros, cons, etc., to keep my choices up to date.
+
+- **Calculate and View Analysis:** As a user, I can calculate and view the analysis of my decision, including the score for each option and a recommendation, to make an informed choice.
+
 </details>
+
+
 
 #### Entity-Relationship Diagram (ERD)
 
