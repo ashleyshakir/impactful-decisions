@@ -11,9 +11,9 @@ import java.util.Map;
  */
 public class RecommendedOption {
     private Option recommendedOption;
-    private Map<Long, Double> optionScores;
+    private Map<String, Double> optionScores;
 
-    public RecommendedOption(Option recommendedOption, Map<Long, Double> optionScores) {
+    public RecommendedOption(Option recommendedOption, Map<String, Double> optionScores) {
         this.recommendedOption = recommendedOption;
         this.optionScores = optionScores;
     }
@@ -26,11 +26,11 @@ public class RecommendedOption {
         this.recommendedOption = recommendedOption;
     }
 
-    public Map<Long, Double> getOptionScores() {
+    public Map<String, Double> getOptionScores() {
         return optionScores;
     }
 
-    public void setOptionScores(Map<Long, Double> optionScores) {
+    public void setOptionScores(Map<String, Double> optionScores) {
         this.optionScores = optionScores;
     }
 }

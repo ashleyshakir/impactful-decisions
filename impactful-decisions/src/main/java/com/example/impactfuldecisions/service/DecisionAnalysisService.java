@@ -48,7 +48,7 @@ public class DecisionAnalysisService {
         for (ProCon pro : pros){
             // Retrieve the associated criteria and its weight
             Criteria criteria = pro.getCriteria();
-            double criteriaWeight = criteria.getWeight();
+            double criteriaWeight = criteria.getWeight() / 100;
 
             // retrieve the rating of the pro
             double proRating = pro.getRating();
@@ -62,7 +62,7 @@ public class DecisionAnalysisService {
         for(ProCon con : cons){
             // Retrieve the associated criteria and its weight
             Criteria criteria = con.getCriteria();
-            double criteriaWeight = criteria.getWeight();
+            double criteriaWeight = criteria.getWeight() / 100;
 
             // retrieve the rating of the con
             double conRating = con.getRating();
@@ -88,15 +88,36 @@ public class DecisionAnalysisService {
      */
     public RecommendedOption calculateAllOptionScores(Long decisionId) {
         Decision decision = decisionRepository.findById(decisionId).get();
-        Map<Long, Double> optionScores = new HashMap<>();
+        Map<String, Double> optionScores = new HashMap<>();
         Option recommendedOption = null;
         double highestScore = Double.NEGATIVE_INFINITY;
+        double lowestScore = Double.POSITIVE_INFINITY;
         for (Option option : decision.getOptionList()) {
             double optionScore = calculateOptionScore(decisionId, option.getId());
-            optionScores.put(option.getId(), optionScore);
+            optionScores.put(option.getName(), optionScore);
 
             if (optionScore > highestScore) {
                 highestScore = optionScore;
+            }
+            if (optionScore < lowestScore) {
+                lowestScore = optionScore;
+            }
+        }
+        // Calculate offset
+        double offset = 0;
+        if (lowestScore < 0) {
+            offset = Math.abs(lowestScore) + 1;
+        }
+        // Apply offset to each score
+        for (Map.Entry<String, Double> entry : optionScores.entrySet()) {
+            optionScores.put(entry.getKey(), entry.getValue() + offset);
+        }
+        // Find the recommended option again, based on the adjusted scores
+        highestScore = Double.NEGATIVE_INFINITY;
+        for (Option option : decision.getOptionList()) {
+            double adjustedScore = optionScores.get(option.getName());
+            if (adjustedScore > highestScore) {
+                highestScore = adjustedScore;
                 recommendedOption = option;
             }
         }

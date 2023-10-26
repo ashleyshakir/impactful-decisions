@@ -62,7 +62,7 @@ public class DecisionController {
 
     @GetMapping(path = "/decisions/")
     public ResponseEntity<?> getUserDecisions(){
-        List<Decision> decisionList = decisionService.getUserDecisions();
+        Optional<List<Decision>> decisionList = Optional.ofNullable(decisionService.getUserDecisions());
         if(decisionList.isEmpty()){
             message.put("message", "There are no decisions to be made :)");
             return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
@@ -72,6 +72,7 @@ public class DecisionController {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
+
     @PutMapping(path = "/decisions/{decisionId}/")
     public ResponseEntity<?> updateDecision(@PathVariable(value = "decisionId")Long decisionId, @RequestBody Decision decisionObject){
         Optional<Decision> decision = Optional.ofNullable(decisionService.updateDecision(decisionId, decisionObject));
@@ -98,17 +99,31 @@ public class DecisionController {
     }
 
     @PostMapping(path = "decisions/{decisionId}/criteria/")
-    public ResponseEntity<?> addCriteria(@PathVariable(value = "decisionId")Long decisionId, @RequestBody Criteria criteriaObject){
-        Optional<Criteria> criteria = Optional.ofNullable(decisionService.addCriteria(decisionId, criteriaObject));
+    public ResponseEntity<?> addCriteria(@PathVariable(value = "decisionId")Long decisionId, @RequestBody Criteria[] criteriaObjects){
+        Optional<List<Criteria>> criteria = Optional.ofNullable(decisionService.addCriteria(decisionId, criteriaObjects));
         if(criteria.isEmpty()){
             message.put("message", "unable to create criteria.");
             return new ResponseEntity<>(message, HttpStatus.OK);
         } else {
-            message.put("message", "success, criteria added to decision");
-            message.put("data", criteria);
+            message.put("message", "success, criteria added to decision with id: "+ decisionId);
+            message.put("data", criteria.get());
             return new ResponseEntity<>(message, HttpStatus.CREATED);
         }
     }
+
+    @GetMapping(path="decisions/{decisionId}/criteria/")
+    public ResponseEntity<?> getDecisionCriteria(@PathVariable(value = "decisionId")Long decisionId) {
+        List<Criteria> criteriaList = decisionService.getDecisionCriteria(decisionId);
+        if(criteriaList.isEmpty()){
+            message.put("message", "cannot find criteria for decision with id "+ decisionId);
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "success");
+            message.put("data", criteriaList);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
+
 
     @PutMapping(path = "decisions/{decisionId}/criteria/{criteriaId}/")
     public ResponseEntity<?> updateCriteria(@PathVariable(value = "decisionId") Long decisionId, @PathVariable(value = "criteriaId")Long criteriaId, @RequestBody Criteria criteriaObject){
@@ -137,15 +152,28 @@ public class DecisionController {
     }
 
     @PostMapping(path = "decisions/{decisionId}/options/")
-    public ResponseEntity<?> addOption(@PathVariable(value = "decisionId") Long decisionId, @RequestBody Option optionObject) {
-        Optional<Option> option = Optional.ofNullable(decisionService.addOption(decisionId, optionObject));
-        if (option.isEmpty()) {
+    public ResponseEntity<?> addOptions(@PathVariable(value = "decisionId") Long decisionId, @RequestBody Option[] optionObjects) {
+        Optional<List<Option>> options = Optional.ofNullable(decisionService.addOptions(decisionId, optionObjects));
+        if (options.isEmpty()) {
             message.put("message", "unable to create option.");
             return new ResponseEntity<>(message, HttpStatus.OK);
         } else {
-            message.put("message", "success, option added to decision");
-            message.put("data", option);
+            message.put("message", "success, option added to decision with id: "+ decisionId);
+            message.put("data", options.get());
             return new ResponseEntity<>(message, HttpStatus.CREATED);
+        }
+    }
+
+    @GetMapping(path="decisions/{decisionId}/options/")
+    public ResponseEntity<?> getDecisionOptions(@PathVariable(value = "decisionId")Long decisionId) {
+        List<Option> optionList = decisionService.getDecisionOptions(decisionId);
+        if(optionList.isEmpty()){
+            message.put("message", "cannot find options for decision with id "+ decisionId);
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "success");
+            message.put("data", optionList);
+            return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
 
@@ -180,8 +208,8 @@ public class DecisionController {
             @PathVariable(value = "decisionId")Long decisionId,
             @PathVariable(value = "optionId")Long optionId,
             @RequestBody ProCon proConObject,
-            @RequestParam("criteriaId") Long criteriaId) {
-        Optional<Criteria> criteria = criteriaRepository.findById(criteriaId);
+            @RequestParam("criteriaName") String criteriaName) {
+        Optional<Criteria> criteria = Optional.ofNullable(criteriaRepository.findByNameAndDecisionId(criteriaName, decisionId));
         if(criteria.isPresent()){
             Optional<ProCon> proCon = Optional.ofNullable(decisionService.addProCon(decisionId, optionId, criteria.get(),proConObject));
             if(proCon.isEmpty()){
@@ -193,8 +221,21 @@ public class DecisionController {
                 return new ResponseEntity<>(message, HttpStatus.CREATED);
             }
         } else {
-            message.put("message", "unable to assign pro or con to criteria with id " + criteriaId);
+            message.put("message", "unable to assign pro or con to criteria with name " + criteriaName);
             return new ResponseEntity<>(message,HttpStatus.OK);
+        }
+    }
+
+    @GetMapping(path = "/decisions/{decisionId}/options/{optionId}/procons/")
+    public ResponseEntity<?> getOptionProCons (@PathVariable (value = "decisionId") Long decisionId, @PathVariable (value = "optionId") Long optionId){
+        List<ProCon> proConList = decisionService.getOptionProCons(decisionId,optionId);
+        if(proConList.isEmpty()){
+            message.put("message", "cannot find pros or cons for option with id "+ optionId);
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "success");
+            message.put("data", proConList);
+            return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
 
@@ -203,8 +244,9 @@ public class DecisionController {
             @PathVariable(value = "decisionId")Long decisionId,
             @PathVariable(value = "optionId")Long optionId,
             @PathVariable(value = "proconId")Long proconId,
-            @RequestBody ProCon proConObject){
-        Optional<ProCon> proCon = Optional.ofNullable(decisionService.updateProCon(decisionId,optionId,proconId,proConObject));
+            @RequestBody ProCon proConObject,
+            @RequestParam("criteriaName") String criteriaName){
+        Optional<ProCon> proCon = Optional.ofNullable(decisionService.updateProCon(decisionId, optionId, proconId, proConObject, criteriaName));
         if (proCon.isEmpty()) {
             message.put("message", "cannot find pro or con");
             return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
@@ -214,6 +256,7 @@ public class DecisionController {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
+
     @DeleteMapping(path = "/decisions/{decisionId}/options/{optionId}/procons/{proconId}")
     public ResponseEntity<?> deleteProCon (@PathVariable(value = "decisionId")Long decisionId, @PathVariable(value = "optionId")Long optionId, @PathVariable(value = "proconId")Long proconId) {
         Optional<ProCon> proCon = decisionService.deleteProCon(decisionId,optionId, proconId);

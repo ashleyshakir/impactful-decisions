@@ -6,6 +6,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,7 @@ public class Decision {
     private String description;
 
     @Column
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
     @Column
     private boolean isResolved;
@@ -45,7 +46,7 @@ public class Decision {
     public Decision() {
     }
 
-    public Decision(Long id, String title, String description, LocalDate creationDate, boolean isResolved) {
+    public Decision(Long id, String title, String description, LocalDateTime creationDate, boolean isResolved) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -77,11 +78,11 @@ public class Decision {
         this.description = description;
     }
 
-    public LocalDate getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDate creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,9 +54,10 @@ public class DecisionService {
      * @throws DecisionExistsException If a decision with the same title already exists.
      */
     public Decision createDecision(Decision decisionObject) {
-        if (decisionRepository.findByTitle(decisionObject.getTitle()) != null) {
+        if (decisionRepository.findByTitleAndUserId(decisionObject.getTitle(), DecisionService.getCurrentLoggedInUser().getId()) != null) {
             throw new DecisionExistsException("You have already created a decision with the title: " + decisionObject.getTitle());
         } else {
+            decisionObject.setCreationDate(LocalDateTime.now());
             decisionObject.setUser(DecisionService.getCurrentLoggedInUser());
             return decisionRepository.save(decisionObject);
         }
@@ -128,20 +132,41 @@ public class DecisionService {
     }
 
     /**
-     * Adds criteria to an existing Decision based on the provided decisionId and Criteria object.
+     * Adds criteria to an existing Decision based on the provided decisionId and array of Criteria objects.
      *
      * @param decisionId The unique identifier for the Decision to which the criteria will be added.
-     * @param criteriaObject The Criteria object containing the details of the criteria to be added.
-     * @return The added Criteria object after it's saved in the repository.
+     * @param criteriaObjects The Criteria objects containing the details of each criterion to be added.
+     * @return The added Criteria objects after they are saved in the repository.
      * @throws InformationNotFoundException If no decision with the given id exists for the current logged-in user.
      */
-    public Criteria addCriteria(Long decisionId, Criteria criteriaObject) {
+    public List<Criteria> addCriteria(Long decisionId, Criteria[] criteriaObjects) {
         Decision decision = decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId());
         if (decision == null) {
             throw new InformationNotFoundException("Decision not found");
         }
-        criteriaObject.setDecision(decision);
-        return criteriaRepository.save(criteriaObject);
+        List<Criteria> savedCriteria = new ArrayList<>();
+        for(Criteria criteria : criteriaObjects){
+            criteria.setDecision(decision);
+            Criteria savedCriterion = criteriaRepository.save(criteria);
+            savedCriteria.add(savedCriterion);
+        }
+        return savedCriteria;
+    }
+
+    /**
+     * Retrieves a list of criteria belonging to the specified decision ID for the current logged-in user.
+     *
+     * @param decisionId The unique identifier of the decision.
+     * @return A list of criterion objects associated with the specified decision ID.
+     * @throws InformationNotFoundException If the decision with the given ID doesn't exist.
+     */
+    public List<Criteria> getDecisionCriteria(Long decisionId) {
+        Optional<Decision> optionalDecision = Optional.ofNullable(decisionRepository.findByIdAndUserId(decisionId, getCurrentLoggedInUser().getId()));
+        if(optionalDecision.isPresent()){
+            return optionalDecision.get().getCriteriaList();
+        } else {
+            throw new InformationNotFoundException("Decision with id: " + decisionId + " not found.");
+        }
     }
 
     /**
@@ -198,20 +223,41 @@ public class DecisionService {
     }
 
     /**
-     * Adds an option to an existing Decision based on the provided decisionId and Option object.
+     * Adds an array of options to an existing Decision based on the provided decisionId and Option objects.
      *
      * @param decisionId The unique identifier for the Decision to which the option will be added.
-     * @param optionObject The Option object containing the details of the option to be added.
+     * @param optionObjects The Option object array contains the details of the options to be added.
      * @return The added Option object after it's saved in the repository.
      * @throws InformationNotFoundException If no decision with the given id exists for the current logged-in user.
      */
-    public Option addOption(Long decisionId, Option optionObject) {
+    public List<Option> addOptions(Long decisionId, Option[] optionObjects) {
         Decision decision = decisionRepository.findByIdAndUserId(decisionId, DecisionService.getCurrentLoggedInUser().getId());
         if (decision == null) {
             throw new InformationNotFoundException("Decision not found");
         }
-        optionObject.setDecision(decision);
-        return optionRepository.save(optionObject);
+        List<Option> savedOptions = new ArrayList<>();
+        for(Option option : optionObjects){
+            option.setDecision(decision);
+            Option savedOption = optionRepository.save(option);
+            savedOptions.add(savedOption);
+        }
+        return savedOptions;
+    }
+
+    /**
+     * Retrieves a list of options belonging to the specified decision ID for the current logged-in user.
+     *
+     * @param decisionId The unique identifier of the decision.
+     * @return A list of option objects associated with the specified decision ID.
+     * @throws InformationNotFoundException If the decision with the given ID doesn't exist.
+     */
+    public List<Option> getDecisionOptions(Long decisionId) {
+        Optional<Decision> optionalDecision = Optional.ofNullable(decisionRepository.findByIdAndUserId(decisionId, getCurrentLoggedInUser().getId()));
+        if(optionalDecision.isPresent()){
+            return optionalDecision.get().getOptionList();
+        } else {
+            throw new InformationNotFoundException("Decision with id: " + decisionId + " not found.");
+        }
     }
 
     /**
@@ -287,6 +333,23 @@ public class DecisionService {
     }
 
     /**
+     * Retrieves a list of pros and cons belonging to the specified option ID for the specific decision.
+     *
+     * @param decisionId The unique identifier of the decision.
+     * @param optionId The unique identifier of the option.
+     * @return A list of pro-con objects associated with the specified optionId.
+     * @throws InformationNotFoundException If the option with the given ID doesn't exist.
+     */
+    public List<ProCon> getOptionProCons(Long decisionId, Long optionId){
+        Optional<Option> option = Optional.ofNullable(optionRepository.findByIdAndDecisionId(optionId, decisionId));
+        if(option.isPresent()){
+            return option.get().getProConList();
+        } else {
+            throw new InformationNotFoundException("Option with id: " + optionId + " not found.");
+        }
+    }
+
+    /**
      * Updates an existing ProCon object based on the provided decisionId, optionId, proConId, and ProCon object.
      *
      * @param decisionId The unique identifier for the Decision associated with the Option.
@@ -296,7 +359,7 @@ public class DecisionService {
      * @return The updated ProCon object after it's saved in the repository.
      * @throws InformationNotFoundException If no Option with the given decisionId and optionId exists, or if no ProCon with the given proConId exists.
      */
-    public ProCon updateProCon(Long decisionId, Long optionId, Long proConId, ProCon proConObject) {
+    public ProCon updateProCon(Long decisionId, Long optionId, Long proConId, ProCon proConObject, String criteriaName) {
         Option option = optionRepository.findByIdAndDecisionId(optionId, decisionId);
         if (option == null) {
             throw new InformationNotFoundException("Option not found");
@@ -310,6 +373,14 @@ public class DecisionService {
                 existingProCon.setType(proConObject.getType());
                 existingProCon.setRating(proConObject.getRating());
                 existingProCon.setDescription(proConObject.getDescription());
+                // Fetch Criteria using criteriaName
+                Optional<Criteria> criteriaOptional = Optional.ofNullable(criteriaRepository.findByNameAndDecisionId(criteriaName, decisionId));
+                if (criteriaOptional.isEmpty()) {
+                    throw new InformationNotFoundException("Criteria with name " + criteriaName + " not found");
+                }
+                Criteria criteria = criteriaOptional.get();
+                existingProCon.setCriteria(criteria);
+
                 return proConRepository.save(existingProCon);
             }
         }
