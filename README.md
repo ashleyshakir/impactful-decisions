@@ -5,8 +5,32 @@
 ## Project Description
 
 Impactful Decisions is a web-based application designed to empower users to make informed and meaningful choices. In a world filled with countless decisions, this platform provides a structured framework for decision-making, allowing users to define decisions, list criteria, compare options, and analyze pros and cons to arrive at the best possible choice.
-
 I believe that every choice you make shapes your journey, and this application is dedicated to ensuring those choices are impactful and aligned with your goals.
+
+# Table of Contents
+
+1. [Impactful Decisions](#impactful-decisions)
+   - [Project Description](#project-description)
+2. [Project Goals](#project-goals)
+3. [Project Approach](#project-approach)
+   - [1. Planning and Project Documentation](#1-planning-and-project-documentation)
+     - [GitHub Project Board](#github-project-board)
+     - [User-Centric Design](#user-centric-design)
+     - [Entity-Relationship Diagram (ERD)](#entity-relationship-diagram-erd)
+     - [REST API Endpoints](#rest-api-endpoints)
+   - [2. Backend Development (Spring Boot)](#2-backend-development-spring-boot)
+   - [3. Frontend Development (Angular)](#3-frontend-development-angular)
+   - [4. User Experience Enhancement](#4-user-experience-enhancement)
+   - [Comprehensive Testing](#comprehensive-testing)
+4. [Tools and Technologies Used](#tools-and-technologies-used)
+5. [Challenges During Development](#challenges-during-development)
+6. [Installation Instructions](#installation-instructions)
+7. [Acknowledgements](#acknowledgements)
+   - [General Assembly Instructors](#general-assembly-instructors)
+   - [Project Lead and Developer](#project-lead-and-developer)
+9. [Conclusion](#conclusion)
+
+
 
 ## Project Goals
 
@@ -22,9 +46,13 @@ I believe that every choice you make shapes your journey, and this application i
 
 ### 1. Planning and Project Documentation
 
-- **Objective:** Define the project scope, deliverables, and timelines. Utilize GitHub Projects for project management.
-- **Tasks:** Create application user stories, design ERD diagram, define project scope, and set timelines. Set up a GitHub project board for tracking tasks.
-- **Timeline:** October 18, 2023 - October 27, 2023
+- **Objective:** Establish project boundaries, deliverables, and schedules while leveraging GitHub Projects for seamless project management.
+- **Tasks:** 
+  - Draft detailed application user stories.
+  - Construct an Entity Relationship Diagram (ERD).
+  - Compile a table outlining API endpoints.
+  - Initiate and configure a GitHub project board for task tracking.
+- **Timeline:** October 18, 2023 
 
 #### GitHub Project Board
 
@@ -33,6 +61,8 @@ I have utilized GitHub Projects as a resource for project planning and managemen
 ![GitHub Project Board Screenshot](images/github-project-board.png)
 
 #### User-Centric Design
+<details>
+  <summary><b>Backend User Stories</b></summary>
 
 | User Story                      | Description                                                                                                                    |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
@@ -42,8 +72,10 @@ I have utilized GitHub Projects as a resource for project planning and managemen
 | **Delete Decision**             | As a user, I want to delete a decision, removing all criteria, options, and pros and cons associated with it.                  |
 | **Define Criteria**             | As a user, I want to define criteria for my decision, including the name and weight of each criterion.                         |
 | **Add Options**                 | As a user, I want to add options for my decision, providing names for each option.                                             |
-| **List Pros and Cons**          | As a user, I want to list pros and cons for each option, associating them with criteria and assigning ratings.                 |
+| **List Pros and Cons**          | As a user, I want to list pros and cons for each option, associating them with criteria and assigning ratings.   
+| **Update Decision**             | As a user, I want to edit an existing decision, allowing me to modify any aspects of it such as its title, description, options, criteria, pros, cons, etc. |              |
 | **Calculate and View Analysis** | As a user, I want to calculate and view the analysis of my decision, including the score for each option and a recommendation. |
+</details>
 
 #### Entity-Relationship Diagram (ERD)
 
@@ -53,26 +85,64 @@ To model the data structure effectively, I've created an Entity-Relationship Dia
 
 #### REST API Endpoints
 
-Will add after frontend is completed...
+<details>
+  <summary><b>API Endpoints</b></summary>
+  
+  | Endpoint                        | Request Type | URL                                                       | Functionality                                 | Access  |
+  |---------------------------------|--------------|-----------------------------------------------------------|-----------------------------------------------|---------|
+  | **User Registration**           | POST         | `/auth/users/register/`                                   | Create a new user account                     | Public  |
+  | **User Login**                  | POST         | `/auth/users/login/`                                      | Authenticate and log in a user                | Public  |
+  | **Create a Decision**           | POST         | `/api/decisions/`                                         | Create a new decision                         | Private |
+  | **Get Decision by id**          | GET          | `/api/decisions/{decisionId}/`                            | Retrieve a specific decision by its id        | Private |
+  | **Get All Decisions**           | GET          | `/api/decisions/`                                         | Retrieve a list of all decisions              | Private |
+  | **Update Decision**             | PUT          | `/api/decisions/{decisionId}/`                            | Update an existing decision                   | Private |
+  | **Delete Decision**             | DELETE       | `/api/decisions/{decisionId}/`                            | Delete a specific decision by its id          | Private |
+  | **Add Criteria to a Decision**  | POST         | `/api/decisions/{decisionId}/criteria/`                   | Add a new criterion to a specific decision    | Private |
+  | **Get All Criteria**            | GET          | `/api/decisions/{decisionId}/criteria/`                   | Retrieve a list of all criteria               | Private |
+  | **Update Criteria**             | PUT          | `/api/decisions/{decisionId}/criteria/{criterionId}/`     | Update an existing criterion                  | Private |
+  | **Delete Criteria**             | DELETE       | `/api/decisions/{decisionId}/criteria/{criterionId}/`     | Delete a specific criterion by its id         | Private |
+  | **Add Option to a Decision**    | POST         | `/api/decisions/{decisionId}/options/`                    | Add a new option to a specific decision       | Private |
+  | **Get All Options**             | GET          | `/api/decisions/{decisionId}/options/`                    | Retrieve a list of all options                | Private |
+  | **Update Option**               | PUT          | `/api/decisions/{decisionId}/options/{optionId}/`         | Update an existing option                     | Private |
+  | **Delete Option**               | DELETE       | `/api/decisions/{decisionId}/options/{optionId}/`         | Delete a specific option by its id            | Private |
+  | **Add Pro or Con to an Option** | POST         | `/api/decisions/{decisionId}/options/{optionId}/procons/` | Add a new pro or con to a specific option     | Private |
+  | **Get all Pros and Cons**       | GET          | `/api/decisions/{decisionId}/options/{optionId}/procons/` | Retrieve all pros and cons belonging to an option | Private |
+  | **Update Pro or Con**           | PUT          | `/api/decisions/{decisionId}/options/{optionId}/procons/{proconId}/` | Update an existing pro or con             | Private |
+  | **Delete Pro or Con**           | DELETE       | `/api/decisions/{decisionId}/options/{optionId}/procons/{proconId}/` | Delete a specific pro or con by its id    | Private |
+  | **Get Analysis Results**        | GET          | `/api/decisions/{decisionId}/recommendation/`             | Retrieve the analysis results for a decision  | Private |
+
+</details>
+
 
 ### 2. Backend Development (Spring Boot)
 
 - **Objective:** Create the backend infrastructure for the application.
-- **Tasks:** Develop user management features (registration and login), design and implement decision, criteria, and option APIs, create endpoints for adding and analyzing decisions, and ensure user authentication and authorization.
+- **Tasks:** 
+  - Develop user management functionalities including registration and login.
+  - Design and implement CRUD operations for all application models.
+  - Conduct unit tests on service methods and carry out integration tests for API endpoints.
+  - Implement and ensure user authentication and authorization mechanisms.
 - **Timeline:** October 18, 2023 - October 20, 2023
 
 ### 3. Frontend Development (Angular)
 
-- **Objective:** Develop the user interface for the Decision Maker Application.
-- **Tasks:** Create user registration and login interfaces, implement authentication and JWT token handling, design the user dashboard for decision management, and build a wizard-like decision creation interface.
+- **Objective:** Develop the user interface for the Impactful Decisions Application.
+- **Tasks:** 
+  - Create user registration and login interfaces. 
+  - Implement authentication and JWT token handling. 
+  - Design the user dashboard for decision management.
+  - Build a wizard-like decision creation interface.
 - **Timeline:** October 20, 2023 - October 26, 2023
-- **Frontend GitHub Repository** You can view the frontend repository [here](insert-link-to-repo).
+- **Frontend GitHub Repository** You can view the frontend repository [here](https://github.com/ashleyshakir/frontend-impactful-decisions.git).
 
 ### 4. User Experience Enhancement
 
 - **Objective:** Enhance the user interface and overall user experience.
-- **Tasks:** Implement responsive design for both mobile and desktop, improve UI/UX, address user feedback, and optimize application performance.
-- **Timeline:** [Start Date] - [End Date]
+- **Tasks:**  
+  - Implement responsive design for both mobile and desktop.
+  - Improve UI/UX through intuitive navigation and cohesive visuals.
+  - Integrate customized dialog boxes to provide clear user prompts and messages, elevating the interaction quality.
+- **Timeline:** October 25, 2023 - October 26, 2023
 
 ### Comprehensive Testing
 
@@ -97,6 +167,34 @@ To maintain code quality and reliability, I've integrated Cucumber with Rest Ass
 - **Documentation:** Well-documented codebase.
 - **GitHub:** Version control and collaboration platform.
 
+## Challenges During Development
+
+<details>
+<summary><strong>Challenge:</strong> Refactoring Controller Endpoints</summary>
+<br>
+A hurdle I encountered during development was the need to refactor my controller endpoints for Options and Criteria. Initially, they were designed to accept requests with a single Criteria or Option, but I realized I needed to modify them to handle requests with arrays of Criteria and Options.
+
+<br>To address this challenge, I made changes to my controller endpoints to allow incoming requests to include arrays of Criteria and Options. This modification ensured that the API could efficiently process and manage multiple Criteria and Options in a single request, streamlining the decision-making process for users.
+
+</details>
+<details>
+<summary><strong>Challenge:</strong> Implementing Decision Analysis Logic</summary>
+<br>
+Implementing the decision analysis logic, including calculating option scores based on criteria weights and ratings, was complex and required thorough testing. Initially, the calculations could result in negative values, which wouldn't be meaningful or suitable for displaying to the user.
+
+<br>To address this challenge, I implemented an offset mechanism to ensure that option scores would always be positive and within a suitable range for display. By applying this offset, I was able to guarantee that the scores provided valuable insights to users and could be effectively visualized in the pie chart, enhancing the overall user experience.
+
+</details>
+<details>
+<summary><strong>Challenge:</strong> Connection Between ProCon and Criteria Models</summary>
+<br>
+Another challenge I encountered was related to the connection between the ProCon and Criteria models. When adding a ProCon to an option, I successfully associated it with a criteria by sending the criteria name through a request parameter. However, when updating a pro or con, the criteria ID would become null because the update ProCon endpoint wasn't sending the criteria name through the request.
+
+<br> To address this issue, I refactored the update ProCon endpoint to accept not only the ProCon data but also the criteria name as part of the request. This adjustment ensured that the association between ProCons and Criteria remained intact, even during updates, and maintained the integrity of the data model throughout the application.
+
+</details>
+
+
 ## Installation Instructions
 
 To get started using Impactful Decisions, follow these steps:
@@ -120,7 +218,7 @@ To get started using Impactful Decisions, follow these steps:
 
 4. Once the command completes successfully, your project should be ready with all its dependencies installed.
 
-## Resources & Acknowledgements
+## Acknowledgements
 
 ### General Assembly Instructors
 
@@ -128,16 +226,18 @@ To get started using Impactful Decisions, follow these steps:
 - Dhrubo Chowdhury: [GitHub](https://github.com/Dhrubo-Chowdhury)
 - Leonardo Rodriguez: [GitHub](https://github.com/LRodriguez92)
 
-### Links
-
--
--
--
-
-## Project Lead and Developer
+### Project Lead and Developer
 
 - Ashley Shakir: [GitHub](https://github.com/ashleyshakir) | [LinkedIn](https://www.linkedin.com/in/ashleymshakir/)
 
-## Conclusion
 
-The Decision Maker Application is a transformative project aimed at helping individuals make impactful choices in their lives. The planning and project documentation phase, including the use of GitHub Projects, has been instrumental in organizing and managing the project effectively.
+## Conclusion  🎉
+
+Hey there! If you've made it this far, thanks for diving deep into the backend of my decision-making app. I've worked hard to ensure that this API is robust and reliable, ready to be paired with any front-end framework or service out there!
+
+A lot of cups of coffee and brainstorming sessions have gone into creating and optimizing this backend. I believe that a strong foundation on the backend paves the way for an even better user experience on the front end. And while I am super proud of what I have achieved, I'm always open to feedback and suggestions. After all, coding is a journey, not a destination.
+
+Happy coding, and remember: Life is a matter of choices, and every choice you make makes you. If you're ever stuck deciding, well, you know which app to use!
+
+P.S. If you're working on connecting this backend with a front end or just have questions, feel free to reach out ☺️
+
