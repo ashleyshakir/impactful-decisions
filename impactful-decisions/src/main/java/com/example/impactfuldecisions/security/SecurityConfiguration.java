@@ -36,7 +36,7 @@ public class SecurityConfiguration {
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/auth/users/hello/").permitAll()
                 .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-
+                .antMatchers("https://git.heroku.com/impactful-decisions.git").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Set session creation policy to STATELESS.
