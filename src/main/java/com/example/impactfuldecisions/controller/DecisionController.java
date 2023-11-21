@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "https://ashleyshakir.github.io/frontend-impactful-decisions")
 @RequestMapping(path = "/api")
 public class DecisionController {
 

@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 @RestController
+@CrossOrigin(origins = "https://ashleyshakir.github.io/frontend-impactful-decisions")
 @RequestMapping(path = "/auth/users")
 public class UserController {
 
